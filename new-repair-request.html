@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новая заявка на ремонт</title>
+    <link rel="stylesheet" href="css/new-repair-request.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Новая заявка на ремонт</h1>
+            <button id="submitBtn" class="btn btn-primary">Отправить заявку</button>
+        </div>
+
+        <div class="main-content">
+            <!-- Device Selection -->
+            <div class="card">
+                <div class="form-group">
+                    <label for="device-select">Выберите ваш регистратор</label>
+                    <select id="device-select">
+                        <option value="">Выберите устройство...</option>
+                        <option value="DataLogger DL-200 (DL-2210-45B)">DataLogger DL-200 (С/Н: DL-2210-45B)</option>
+                        <option value="VibroMaster VM-450 (VM-893-12A)">VibroMaster VM-450 (С/Н: VM-893-12A)</option>
+                        <option value="ThermoRec T-12 (TR-567-98C)">ThermoRec T-12 (С/Н: TR-567-98C)</option>
+                        <option value="SpyderLog SL-3 (SL-012-77D)">SpyderLog SL-3 (С/Н: SL-012-77D)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Problem Description -->
+            <div class="card">
+                <div class="form-group">
+                    <label for="problem-description">Подробно опишите проблему</label>
+                    <textarea id="problem-description" placeholder="напр., датчик не реагирует, ошибка записи SD-карты..."></textarea>
+                </div>
+            </div>
+
+            <!-- File Uploads (оставляем) -->
+            <div class="card">
+                <div class="form-group">
+                    <label>Фотографии повреждений</label>
+                    <button class="btn btn-outline">
+                        <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">...</svg>
+                        Загрузить фото
+                    </button>
+                    <p class="helper-text">Поддерживаются ссылки с Яндекс.Диска и Google Drive. Вставьте ссылку ниже.</p>
+                    <input type="text" id="photo-url" placeholder="https://disk.yandex.ru/...">
+                </div>
+                <div class="separator"></div>
+                <div class="form-group">
+                    <label>Видео повреждений</label>
+                    <button class="btn btn-outline">
+                        <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">...</svg>
+                        Загрузить видео
+                    </button>
+                    <p class="helper-text">Поддерживаются ссылки с Яндекс.Диска и Google Drive. Вставьте ссылку ниже.</p>
+                    <input type="text" id="video-url" placeholder="https://drive.google.com/...">
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button id="submitBottomBtn" class="btn btn-primary btn-large">Отправить заявку на ремонт</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customAlert" class="custom-modal hidden">
+    <div class="custom-modal-content">
+        <div class="custom-modal-header">
+            <h3 id="alertTitle">Уведомление</h3>
+            <button class="custom-modal-close" id="alertClose">&times;</button>
+        </div>
+        <div class="custom-modal-body">
+            <p id="alertMessage"></p>
+        </div>
+        <div class="custom-modal-footer">
+            <button id="alertOk" class="btn-primary">OK</button>
+        </div>
+    </div>
+</div>
+
+    <script src="js/new-repair-request.js"></script>
+</body>
+</html>
