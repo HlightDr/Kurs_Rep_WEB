@@ -1,0 +1,292 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: white;
+    color: black;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 48px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.header h1 {
+    font-size: 30px;
+    font-weight: bold;
+    color: black;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-outline {
+    background-color: white;
+    color: black;
+    border: 1px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.btn-outline:hover {
+    background-color: #f9fafb;
+}
+
+.btn-large {
+    padding: 24px 48px;
+    font-size: 18px;
+}
+
+/* Main Content */
+.main-content {
+    padding: 32px 48px;
+}
+
+/* Card */
+.card {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 32px;
+}
+
+.card-blue {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 12px;
+}
+
+label {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: black;
+}
+
+select, textarea, input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-family: inherit;
+}
+
+select:focus, textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Стиль для select multiple */
+select[multiple] {
+    min-height: 160px;
+    padding: 8px;
+}
+
+select[multiple] option {
+    padding: 8px;
+    margin: 2px 0;
+    border-radius: 4px;
+}
+
+textarea {
+    min-height: 128px;
+    resize: vertical;
+}
+
+/* Separator */
+.separator {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 24px 0;
+}
+
+/* Helper Text */
+.helper-text {
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 8px;
+}
+
+.helper-text-multi {
+    font-size: 13px;
+    color: #6c757d;
+    margin-top: 6px;
+}
+
+/* Section Title */
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+    margin-bottom: 16px;
+}
+
+/* Cost Estimate */
+.cost-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.cost-label {
+    color: #374151;
+}
+
+.cost-value {
+    font-weight: 600;
+}
+
+.cost-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    padding-top: 8px;
+}
+
+.cost-total-label {
+    font-weight: bold;
+    color: black;
+}
+
+.cost-total-value {
+    font-weight: bold;
+    color: #2563eb;
+}
+
+/* Submit Section */
+.submit-section {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 32px;
+}
+
+/* Icon */
+.upload-icon {
+    width: 16px;
+    height: 16px;
+}
+
+select[multiple] option:active {
+    background-image: none !important;
+}
+
+/* Кастомное модальное окно Alert */
+.custom-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 1000;
+}
+.custom-modal.hidden {
+    display: none;
+}
+.custom-modal-content {
+    background-color: white;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    padding: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+.custom-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.custom-modal-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+}
+.custom-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #9ca3af;
+}
+.custom-modal-body {
+    margin-bottom: 24px;
+}
+.custom-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: 16px;
+}
+.status-pending {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+.status-accepted {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+.hidden {
+    display: none;
+}
