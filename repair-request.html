@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заявка на ремонт #R-232</title>
+    <link rel="stylesheet" href="css/repair-request.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div>
+            <button class="back-button">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Назад</span>
+            </button>
+
+            <div class="header">
+                <h1>Заявка на ремонт #R-232</h1>
+                <span class="status-badge">Диагностика в процессе</span>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Left Column -->
+            <div>
+                <!-- Device Info Card -->
+                <div class="card" style="margin-bottom: 24px;">
+                    <h2>Информация об устройстве</h2>
+                    <div>
+                        <div class="info-row">
+                            <span class="info-label">Модель:</span>
+                            <span class="info-value">DataLogger DL-200</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Серийный номер:</span>
+                            <span class="info-value">DL-2210-45B</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Заявленная проблема:</span>
+                            <span class="info-value">Прерывистые показания датчиков, сбои системы</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diagnostic Results Card -->
+                <div class="card diagnostic-card" style="margin-bottom: 24px;">
+                    <div class="diagnostic-header">
+                        <div>
+                            <h2 style="margin-bottom: 8px;">Результаты диагностики</h2>
+                            <p class="diagnostic-text">
+                                <strong>Диагностика завершена:</strong> Обнаружен отказ датчика вибрации, выявлено ухудшение состояния компонентов основной платы. Датчик вибрации (VS-2000) больше не реагирует на калибровочные сигналы, а основная плата показывает признаки старения конденсаторов, влияющих на стабильность обработки данных. Требуется замена основной платы. Прилагается подробный отчет о диагностике с показаниями осциллографа и анализом компонентов.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- БЛОКИ ТОЛЬКО ДЛЯ АДМИНИСТРАТОРА -->
+                <div class="admin-only">
+                    <div class="card">
+                        <h2 class="section-title">Выберите причины поломки</h2>
+                        <div class="form-group">
+                            <select id="fault-causes-select" multiple size="6">
+                                <option value="Выход датчика вибрации">Выход датчика вибрации</option>
+                                <option value="Ошибка записи на SD-карту">Ошибка записи на SD-карту</option>
+                                <option value="Разряд аккумулятора">Разряд аккумулятора</option>
+                                <option value="Сбой прошивки">Сбой прошивки</option>
+                                <option value="Отказ основной платы">Отказ основной платы</option>
+                            </select>
+                            <div class="helper-text-multi">Для выбора нескольких причин зажмите Ctrl (Cmd) и кликайте по нужным позициям.</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="section-title">Выберите необходимые запчасти (каталог заполнен администратором)</h2>
+                        <div class="form-group">
+                            <select id="parts-select" multiple size="6">
+                                <option value="3200">Датчик вибрации (3 200 ₽)</option>
+                                <option value="1800">Модуль SD-карты (1 800 ₽)</option>
+                                <option value="4500">Аккумуляторная батарея (4 500 ₽)</option>
+                                <option value="2000">Восстановление прошивки (2 000 ₽)</option>
+                                <option value="12000">Главная плата (12 000 ₽)</option>
+                            </select>
+                            <div class="helper-text-multi">Для выбора нескольких запчастей зажмите Ctrl (Cmd) и кликайте по нужным позициям.</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="form-group">
+                            <label for="work-select">Выберите тип работы</label>
+                            <select id="work-select">
+                                <option value="3000">Стандартный ремонт (3 000 ₽)</option>
+                                <option value="1000">Диагностика без ремонта (1 000 ₽)</option>
+                                <option value="5000">Сложный ремонт электроники (5 000 ₽)</option>
+                                <option value="2000">Обновление/восстановление прошивки (2 000 ₽)</option>
+                                <option value="7000">Замена материнской платы (7 000 ₽)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card card-blue">
+                        <h2 class="section-title">Расчет стоимости</h2>
+                        <div>
+                            <div class="cost-row">
+                                <span class="cost-label">Итого запчасти:</span>
+                                <span class="cost-value" id="parts-total">0 ₽</span>
+                            </div>
+                            <div class="cost-row">
+                                <span class="cost-label">Работа:</span>
+                                <span class="cost-value" id="work-cost">3 000 ₽</span>
+                            </div>
+                            <div class="separator"></div>
+                            <div class="cost-total">
+                                <span class="cost-total-label">Общая стоимость:</span>
+                                <span class="cost-total-value" id="total-estimate">3 000 ₽</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ИТОГОВАЯ СМЕТА (видна всем) -->
+                <div class="card" id="final-cost-card">
+                    <h2>Окончательная смета расходов</h2>
+                    <div id="final-cost-table-container">
+                        <p>Загрузка...</p>
+                    </div>
+                    <button class="approve-button">Одобрить и оплатить</button>
+                </div>
+            </div>
+
+            <!-- Right Column (таймлайн) -->
+            <div>
+                <div class="card timeline-card">
+                    <h2>График ремонта</h2>
+                    <div class="timeline">
+                        <div class="timeline-step"><div class="timeline-marker"><div class="timeline-dot completed"><svg class="icon checkmark" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="timeline-line completed"></div></div><div class="timeline-label completed">Заявка получена</div></div>
+                        <div class="timeline-step"><div class="timeline-marker"><div class="timeline-dot completed"><svg class="icon checkmark" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="timeline-line completed"></div></div><div class="timeline-label completed">В пути к сервисному центру</div></div>
+                        <div class="timeline-step"><div class="timeline-marker"><div class="timeline-dot active"><div class="inner-dot"></div></div><div class="timeline-line pending"></div></div><div class="timeline-label active">Диагностика проблемы</div></div>
+                        <div class="timeline-step"><div class="timeline-marker"><div class="timeline-dot pending"></div><div class="timeline-line pending"></div></div><div class="timeline-label pending">Ожидание запчастей <span class="optional-tag">(опционально)</span></div></div>
+                        <div class="timeline-step"><div class="timeline-marker"><div class="timeline-dot pending"></div><div class="timeline-line pending"></div></div><div class="timeline-label pending">Ремонт завершен</div></div>
+                        <div class="timeline-step"><div class="timeline-marker"><div class="timeline-dot pending"></div></div><div class="timeline-label pending">Готово к выдаче / Отправлено обратно</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button class="chat-toggle" id="chatToggle">
+            <svg class="icon-lg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </button>
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header"><h3>Чат поддержки</h3><button class="chat-close" id="chatClose"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+            <div class="chat-messages">
+                <div class="message customer"><div class="message-bubble"><p class="message-text">Когда завершится ремонт?</p></div><span class="message-time">10:23</span></div>
+                <div class="message support"><div class="message-bubble"><p class="message-text">Мы ждем датчик вибрации, ожидается 3-5 дней.</p></div><span class="message-time">10:45</span></div>
+            </div>
+            <div class="chat-input-container"><div class="chat-input-wrapper"><input type="text" class="chat-input" placeholder="Введите ваше сообщение..." id="chatInput"><button class="chat-send" id="chatSend"><svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно Alert (уведомление) -->
+<div id="alertModal" class="modal-overlay hidden">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="alertTitle">Уведомление</h3>
+            <button class="close-btn" id="alertClose">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="alertMessage"></p>
+        </div>
+        <div class="modal-footer">
+            <button id="alertOk" class="btn-primary">OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно Confirm (подтверждение) -->
+<div id="confirmModal" class="modal-overlay hidden">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="confirmTitle">Подтверждение</h3>
+            <button class="close-btn" id="confirmClose">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="confirmMessage"></p>
+        </div>
+        <div class="modal-footer">
+            <button id="confirmYes" class="btn-primary">Да</button>
+            <button id="confirmNo" class="btn-secondary">Нет</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно Prompt (ввод) -->
+<div id="promptModal" class="modal-overlay hidden">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="promptTitle">Ввод данных</h3>
+            <button class="close-btn" id="promptClose">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="promptMessage"></p>
+            <input type="text" id="promptInput" class="modal-input" placeholder="">
+        </div>
+        <div class="modal-footer">
+            <button id="promptOk" class="btn-primary">OK</button>
+            <button id="promptCancel" class="btn-secondary">Отмена</button>
+        </div>
+    </div>
+</div>
+
+     <script src="js/repair-request.js"></script>    
+</body>
+</html>
