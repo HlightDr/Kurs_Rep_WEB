@@ -1,0 +1,337 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: white;
+    color: black;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 40px 48px;
+}
+
+.header {
+    margin-bottom: 32px;
+}
+
+.header h1 {
+    font-size: 36px;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 8px;
+}
+
+.header p {
+    color: #6b7280;
+    font-size: 16px;
+}
+
+.add-button-container {
+    margin-bottom: 24px;
+}
+
+.add-button {
+    background-color: #2563eb;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.add-button:hover {
+    background-color: #1d4ed8;
+}
+
+.add-button .plus {
+    font-size: 20px;
+}
+
+.table-container {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+thead th {
+    padding: 16px 24px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: black;
+}
+
+tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s;
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+tbody td {
+    padding: 16px 24px;
+}
+
+.device-model {
+    color: black;
+    font-weight: 500;
+}
+
+.serial-number {
+    color: #374151;
+    font-family: 'Courier New', monospace;
+}
+
+.date {
+    color: #374151;
+}
+
+.view-history-button {
+    color: #2563eb;
+    font-weight: 600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.view-history-button:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
+
+/* Modal Styles - CSS Only Implementation */
+.modal-checkbox {
+    display: none;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.modal-checkbox:checked ~ .container ~ .modal-overlay {
+    display: flex;
+}
+
+.modal-overlay-close {
+    position: fixed;
+    inset: 0;
+    cursor: default;
+}
+
+.modal {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-width: 28rem;
+    width: 100%;
+    margin: 0 16px;
+    position: relative;
+    z-index: 51;
+}
+
+.modal-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: black;
+}
+
+.close-button {
+    color: #9ca3af;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.close-button:hover {
+    color: #4b5563;
+}
+
+.close-button svg {
+    width: 24px;
+    height: 24px;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: black;
+    margin-bottom: 8px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    color: black;
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #2563eb;
+}
+
+.form-help {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.modal-footer {
+    padding: 16px 24px;
+    background-color: #f9fafb;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.cancel-button {
+    padding: 10px 20px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.cancel-button:hover {
+    background-color: #f3f4f6;
+}
+
+.register-button {
+    padding: 10px 20px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.register-button:hover {
+    background-color: #1d4ed8;
+}
+
+.register-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Кастомное модальное окно (Alert) */
+.custom-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 1000;
+}
+.custom-modal.hidden {
+    display: none;
+}
+.custom-modal-content {
+    background-color: white;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    padding: 24px;
+}
+.custom-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.custom-modal-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+}
+.custom-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+.custom-modal-body {
+    margin-bottom: 24px;
+}
+.custom-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
