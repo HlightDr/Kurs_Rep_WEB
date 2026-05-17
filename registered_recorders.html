@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои зарегистрированные регистраторы</title>
+    <link rel="stylesheet" href="css/registered_recorders.css">
+</head>
+<body>
+    <!-- Hidden checkbox to control modal state -->
+    <input type="checkbox" id="modal-toggle" class="modal-checkbox">
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Зарегистрированные регистраторы</h1>
+            <p>Мои зарегистрированные регистраторы</p>
+        </div>
+
+        <!-- Add New Recorder Button -->
+        <div class="add-button-container">
+            <label for="modal-toggle" class="add-button">
+                <span class="plus">+</span>
+                Добавить новый регистратор
+            </label>
+        </div>
+
+        <!-- Device Table -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Модель устройства</th>
+                        <th>Серийный номер</th>
+                        <th>Дата добавления</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="device-model">DataLogger DL-200</td>
+                        <td class="serial-number">DL200-2024-A3F71</td>
+                        <td class="date">15 января 2024 г.</td>
+                        <td>
+                            <a href="#device-1" class="view-history-button">
+                                Посмотреть историю ремонта
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="device-model">VibroMaster VM-450</td>
+                        <td class="serial-number">VM450-2023-B8K92</td>
+                        <td class="date">22 марта 2024 г.</td>
+                        <td>
+                            <a href="#device-2" class="view-history-button">
+                                Посмотреть историю ремонта
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="device-model">ThermoRec T-12</td>
+                        <td class="serial-number">T12-2025-C1M45</td>
+                        <td class="date">10 июня 2025 г.</td>
+                        <td>
+                            <a href="#device-3" class="view-history-button">
+                                Посмотреть историю ремонта
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="device-model">SpyderLog SL-3</td>
+                        <td class="serial-number">SL3-2025-D7N88</td>
+                        <td class="date">3 ноября 2025 г.</td>
+                        <td>
+                            <a href="#device-4" class="view-history-button">
+                                Посмотреть историю ремонта
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Добавить новый регистратор</h2>
+                <label for="modal-toggle" class="close-button">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </label>
+            </div>
+            <form action="#" method="post">
+                <div class="modal-body">
+                    <label for="serialNumber" class="form-label">
+                        Введите серийный номер
+                    </label>
+                    <input
+                        type="text"
+                        id="serialNumber"
+                        name="serialNumber"
+                        class="form-input"
+                        placeholder="например, DL200-2024-A3F71"
+                        required
+                    />
+                    <p class="form-help">
+                        Вы можете найти серийный номер на этикетке устройства или в технической документации.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <label for="modal-toggle" class="cancel-button">
+                        Отмена
+                    </label>
+                    <button type="submit" class="register-button">
+                        Зарегистрировать
+                    </button>
+                </div>
+            </form>
+        </div>
+        <!-- Close modal when clicking on overlay -->
+        <label for="modal-toggle" class="modal-overlay-close"></label>
+    </div>
+
+    <!-- Кастомное модальное окно Alert -->
+<div id="customAlert" class="custom-modal hidden">
+    <div class="custom-modal-content">
+        <div class="custom-modal-header">
+            <h3 id="alertTitle">Уведомление</h3>
+            <button class="custom-modal-close" id="alertClose">&times;</button>
+        </div>
+        <div class="custom-modal-body">
+            <p id="alertMessage"></p>
+        </div>
+        <div class="custom-modal-footer">
+            <button id="alertOk" class="btn-primary">OK</button>
+        </div>
+    </div>
+</div>
+
+    <script src="js/registered_recorders.js"></script>
+</body>
+</html>
