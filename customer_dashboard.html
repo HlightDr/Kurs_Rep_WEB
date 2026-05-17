@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портал обслуживания промышленных регистраторов</title>
+    <link rel="stylesheet" href="css/customer_dashboard.css">
+</head>
+<body>
+    <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+        </symbol>
+        <symbol id="icon-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </symbol>
+        <symbol id="icon-check-circle-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="8 12 12 16 16 8"/>
+        </symbol>
+        <symbol id="icon-message-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </symbol>
+    </svg>
+
+    <main class="main">
+        <div class="container">
+            <div class="new-repair-wrapper">
+                <button class="btn-primary">
+                    <svg class="icon"><use href="#icon-plus"/></svg>
+                    <span>Новая заявка на ремонт</span>
+                </button>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Левая колонка -->
+                <div class="space-y-3">
+                    <div class="card">
+                        <h2 class="card-title" id="recordersLink">Мои зарегистрированные регистраторы</h2>
+                        <div class="recorder-list">
+                            <div class="recorder-item" data-sn="DL-200-2024-0847" data-model="DataLogger DL-200">
+                                <div class="recorder-icon"><svg class="icon"><use href="#icon-activity"/></svg></div>
+                                <div class="recorder-info">
+                                    <div class="recorder-name">DataLogger DL-200</div>
+                                    <div class="recorder-sn">С/Н: DL-200-2024-0847</div>
+                                </div>
+                            </div>
+                            <div class="recorder-item" data-sn="VM-450-2023-1542" data-model="VibroMaster VM-450">
+                                <div class="recorder-icon"><svg class="icon"><use href="#icon-activity"/></svg></div>
+                                <div class="recorder-info">
+                                    <div class="recorder-name">VibroMaster VM-450</div>
+                                    <div class="recorder-sn">С/Н: VM-450-2023-1542</div>
+                                </div>
+                            </div>
+                            <div class="recorder-item" data-sn="T-12-2025-0093" data-model="ThermoRec T-12">
+                                <div class="recorder-icon"><svg class="icon"><use href="#icon-activity"/></svg></div>
+                                <div class="recorder-info">
+                                    <div class="recorder-name">ThermoRec T-12</div>
+                                    <div class="recorder-sn">С/Н: T-12-2025-0093</div>
+                                </div>
+                            </div>
+                            <div class="recorder-item" data-sn="SL-3-2024-2156" data-model="SpyderLog SL-3">
+                                <div class="recorder-icon"><svg class="icon"><use href="#icon-activity"/></svg></div>
+                                <div class="recorder-info">
+                                    <div class="recorder-name">SpyderLog SL-3</div>
+                                    <div class="recorder-sn">С/Н: SL-3-2024-2156</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">Последний завершённый ремонт</h2>
+                        <div class="repair-completed">
+                            <div class="repair-header">
+                                <div class="repair-icon-green">
+                                    <svg class="icon"><use href="#icon-check-circle-2"/></svg>
+                                </div>
+                                <div class="repair-details">
+                                    <div class="repair-title">SpyderLog SL-3</div>
+                                    <div class="repair-description">Сбой прошивки - перепрошит главный контроллер и обновление до v3.2.1</div>
+                                </div>
+                            </div>
+                            <div class="repair-footer">
+                                <div class="repair-date"><span>28 марта 2026</span></div>
+                                <div class="repair-price"><span>8 500 ₽</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Правая колонка -->
+                <div class="space-y-3">
+                    <div class="card">
+                        <h2 class="card-title">Активные заявки на ремонт</h2>
+                        <div>
+                            <div class="request-item" data-id="ЗАП-2026-0847">
+                                <div class="request-header">
+                                    <div class="request-device"><span class="recorder-name">DataLogger DL-200</span></div>
+                                    <span class="status-badge status-blue">В работе</span>
+                                </div>
+                                <div class="request-problem">Датчик не отвечает</div>
+                                <div class="request-footer">
+                                    <span class="request-id">ID: ЗАП-2026-0847</span>
+                                    <div class="deadline"><span>15 апр. 2026</span></div>
+                                </div>
+                            </div>
+                            <div class="request-item" data-id="ЗАП-2026-0823">
+                                <div class="request-header">
+                                    <div class="request-device"><span class="recorder-name">ThermoRec T-12</span></div>
+                                    <span class="status-badge status-purple">Диагностика</span>
+                                </div>
+                                <div class="request-problem">Данные не сохраняются на SD-карту</div>
+                                <div class="request-footer">
+                                    <span class="request-id">ID: ЗАП-2026-0823</span>
+                                    <div class="deadline"><span>12 апр. 2026</span></div>
+                                </div>
+                            </div>
+                            <div class="request-item" data-id="ЗАП-2026-0809">
+                                <div class="request-header">
+                                    <div class="request-device"><span class="recorder-name">VibroMaster VM-450</span></div>
+                                    <span class="status-badge status-amber">Ожидание деталей</span>
+                                </div>
+                                <div class="request-problem">Быстрый разряд батареи</div>
+                                <div class="request-footer">
+                                    <span class="request-id">ID: ЗАП-2026-0809</span>
+                                    <div class="deadline"><span>10 апр. 2026</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="messages-header">
+                            <h2 class="card-title" style="margin-bottom:0;">Последние сообщения</h2>
+                        </div>
+                        <div>
+                            <div class="message-item message-highlight">
+                                <div class="message-meta">
+                                    <div class="message-sender">
+                                        <svg class="icon"><use href="#icon-message-square"/></svg>
+                                        <span class="recorder-name">Служба поддержки</span>
+                                        <span class="unread-dot"></span>
+                                    </div>
+                                    <div class="message-time"><span>2 ч.</span></div>
+                                </div>
+                                <div class="message-text">Калибровка вашего VibroMaster VM-450 будет завершена к 10 апреля. Мы уведомим вас, как только устройство будет готово к выдаче.</div>
+                            </div>
+                            <div class="message-item">
+                                <div class="message-meta">
+                                    <div class="message-sender">
+                                        <svg class="icon"><use href="#icon-message-square"/></svg>
+                                        <span class="recorder-name">Вы</span>
+                                    </div>
+                                    <div class="message-time"><span>4 ч.</span></div>
+                                </div>
+                                <div class="message-text">Когда будет выполнена калибровка?</div>
+                            </div>
+                            <div class="message-item">
+                                <div class="message-meta">
+                                    <div class="message-sender">
+                                        <svg class="icon"><use href="#icon-message-square"/></svg>
+                                        <span class="recorder-name">Служба поддержки</span>
+                                    </div>
+                                    <div class="message-time"><span>Вчера</span></div>
+                                </div>
+                                <div class="message-text">Мы получили ваш DataLogger DL-200 и в настоящее время диагностируем проблему с подключением датчика.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/customer_dashboard.js"></script>
+</body>
+</html>
