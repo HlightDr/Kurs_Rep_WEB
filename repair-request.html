@@ -8,7 +8,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div>
             <button class="back-button">
                 <svg class="icon" viewBox="0 0 24 24">
@@ -24,28 +23,25 @@
         </div>
 
         <div class="grid">
-            <!-- Left Column -->
             <div>
-                <!-- Device Info Card -->
                 <div class="card" style="margin-bottom: 24px;">
                     <h2>Информация об устройстве</h2>
                     <div>
                         <div class="info-row">
                             <span class="info-label">Модель:</span>
-                            <span class="info-value">DataLogger DL-200</span>
+                            <span class="info-value model">DataLogger DL-200</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Серийный номер:</span>
-                            <span class="info-value">DL-2210-45B</span>
+                            <span class="info-value serial">DL-2210-45B</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Заявленная проблема:</span>
-                            <span class="info-value">Прерывистые показания датчиков, сбои системы</span>
+                            <span class="info-value problem">Прерывистые показания датчиков, сбои системы</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Diagnostic Results Card -->
                 <div class="card diagnostic-card" style="margin-bottom: 24px;">
                     <div class="diagnostic-header">
                         <div>
@@ -57,7 +53,6 @@
                     </div>
                 </div>
 
-                <!-- БЛОКИ ТОЛЬКО ДЛЯ АДМИНИСТРАТОРА -->
                 <div class="admin-only">
                     <div class="card">
                         <h2 class="section-title">Выберите причины поломки</h2>
@@ -120,7 +115,6 @@
                     </div>
                 </div>
 
-                <!-- ИТОГОВАЯ СМЕТА (видна всем) -->
                 <div class="card" id="final-cost-card">
                     <h2>Окончательная смета расходов</h2>
                     <div id="final-cost-table-container">
@@ -130,7 +124,6 @@
                 </div>
             </div>
 
-            <!-- Right Column (таймлайн) -->
             <div>
                 <div class="card timeline-card">
                     <h2>График ремонта</h2>
@@ -147,22 +140,17 @@
         </div>
     </div>
 
-    <!-- Chat Widget -->
     <div class="chat-widget">
         <button class="chat-toggle" id="chatToggle">
             <svg class="icon-lg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </button>
         <div class="chat-container" id="chatContainer">
             <div class="chat-header"><h3>Чат поддержки</h3><button class="chat-close" id="chatClose"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-            <div class="chat-messages">
-                <div class="message customer"><div class="message-bubble"><p class="message-text">Когда завершится ремонт?</p></div><span class="message-time">10:23</span></div>
-                <div class="message support"><div class="message-bubble"><p class="message-text">Мы ждем датчик вибрации, ожидается 3-5 дней.</p></div><span class="message-time">10:45</span></div>
-            </div>
+            <div class="chat-messages" id="chatMessages"></div>
             <div class="chat-input-container"><div class="chat-input-wrapper"><input type="text" class="chat-input" placeholder="Введите ваше сообщение..." id="chatInput"><button class="chat-send" id="chatSend"><svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div></div>
         </div>
     </div>
 
-    <!-- Модальное окно Alert (уведомление) -->
 <div id="alertModal" class="modal-overlay hidden">
     <div class="modal">
         <div class="modal-header">
@@ -178,7 +166,6 @@
     </div>
 </div>
 
-<!-- Модальное окно Confirm (подтверждение) -->
 <div id="confirmModal" class="modal-overlay hidden">
     <div class="modal">
         <div class="modal-header">
@@ -195,7 +182,6 @@
     </div>
 </div>
 
-<!-- Модальное окно Prompt (ввод) -->
 <div id="promptModal" class="modal-overlay hidden">
     <div class="modal">
         <div class="modal-header">
@@ -209,6 +195,36 @@
         <div class="modal-footer">
             <button id="promptOk" class="btn-primary">OK</button>
             <button id="promptCancel" class="btn-secondary">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<div id="paymentModal" class="modal-overlay hidden">
+    <div class="modal" style="max-width: 400px;">
+        <div class="modal-header">
+            <h3>Оплата ремонта</h3>
+            <button class="close-btn" id="closePaymentBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Номер карты</label>
+                <input type="text" id="cardNumber" class="modal-input" placeholder="1234 5678 9012 3456" maxlength="19">
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <div class="form-group" style="flex:1">
+                    <label>Срок (ММ/ГГ)</label>
+                    <input type="text" id="cardExpiry" class="modal-input" placeholder="ММ/ГГ" maxlength="5">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>CVV</label>
+                    <input type="text" id="cardCvv" class="modal-input" placeholder="123" maxlength="3">
+                </div>
+            </div>
+            <p class="helper-text" style="font-size:12px; margin-top:8px;">Тестовый режим: введите любые данные</p>
+        </div>
+        <div class="modal-footer">
+            <button id="payConfirmBtn" class="btn-primary">Оплатить</button>
+            <button id="cancelPayBtn" class="btn-secondary">Отмена</button>
         </div>
     </div>
 </div>
