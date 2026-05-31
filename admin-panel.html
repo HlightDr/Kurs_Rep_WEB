@@ -52,12 +52,12 @@
                     <div class="filter-section">
                         <label for="status-filter">Фильтр по статусу:</label>
                         <select id="status-filter" onchange="filterRepairsByStatus(this.value)">
-    <option value="all">Все Статусы</option>
-    <option value="pending_review">На рассмотрении</option>
-    <option value="in-progress">В Процессе</option>
-    <option value="pending">Ожидание</option>
-    <option value="completed">Завершено</option>
-</select>
+                        <option value="all">Все Статусы</option>
+                        <option value="pending_review">На рассмотрении</option>
+                        <option value="in-progress">В Процессе</option>
+                        <option value="pending">Ожидание</option>
+                        <option value="completed">Завершено</option>
+                    </select>
                     </div>
                     <div class="table-container">
                         <table>
@@ -74,7 +74,6 @@
                 </div>
             </div>
 
-            <!-- Управление Пользователями -->
             <div id="users-tab" class="tab-content hidden">
                 <div class="page-header">
                     <h2>Управление Пользователями</h2>
@@ -122,7 +121,12 @@
                 </div>
             </div>
 
-            <!-- Каталог Запчастей -->
+            <div style="position: fixed; bottom: 20px; right: 10px; z-index: 1000;">
+                <button id="gotoDashboardBtn" style="background-color: #2563eb; color: white; border: none; border-radius: 40px; padding: 10px 20px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    На главную
+                </button>
+            </div>
+
             <div id="spare-parts-tab" class="tab-content hidden">
                 <div class="page-header-with-button">
                     <div><h2>Каталог Запчастей</h2><p>Просмотр и управление инвентарём запасных частей</p></div>
@@ -163,7 +167,6 @@
                 </div>
             </div>
 
-            <!-- Статистика -->
             <div id="statistics-tab" class="tab-content hidden">
                 <div class="page-header"><h2>Статистика</h2><p>Аналитика и показатели ремонтных операций</p></div>
                 <div class="stats-container">
@@ -196,7 +199,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно -->
     <div id="add-part-modal" class="modal-overlay hidden" onclick="closeModalOnOverlay(event)">
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -228,7 +230,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно подтверждения (confirm) -->
 <div id="confirm-modal" class="modal-overlay hidden">
     <div class="modal">
         <div class="modal-header">
@@ -245,7 +246,6 @@
     </div>
 </div>
 
-<!-- Модальное окно ввода (prompt) -->
 <div id="prompt-modal" class="modal-overlay hidden">
     <div class="modal">
         <div class="modal-header">
@@ -263,7 +263,6 @@
     </div>
 </div>
 
-<!-- Модальное окно выбора статуса -->
 <div id="statusModal" class="modal-overlay hidden">
     <div class="modal">
         <div class="modal-header">
@@ -273,11 +272,11 @@
         <div class="modal-body">
             <p>Выберите новый статус:</p>
             <select id="statusSelect" class="form-input">
-    <option value="pending_review">На рассмотрении</option>
-    <option value="in-progress">В процессе</option>
-    <option value="pending">Ожидание</option>
-    <option value="completed">Завершено</option>
-</select>
+                <option value="pending_review">На рассмотрении</option>
+                <option value="in-progress">В процессе</option>
+                <option value="pending">Ожидание</option>
+                <option value="completed">Завершено</option>
+            </select>
         </div>
         <div class="modal-footer">
             <button id="statusSaveBtn" class="btn-primary">Сохранить</button>
