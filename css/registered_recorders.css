@@ -21,6 +21,28 @@ body {
     margin-bottom: 32px;
 }
 
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #2563eb;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+}
+
+.back-button:hover {
+    color: #1d4ed8;
+}
+
+.back-button svg {
+    width: 20px;
+    height: 20px;
+}
+
 .header h1 {
     font-size: 36px;
     font-weight: bold;
@@ -132,7 +154,6 @@ tbody td {
     text-decoration: underline;
 }
 
-/* Modal Styles - CSS Only Implementation */
 .modal-checkbox {
     display: none;
 }
@@ -283,7 +304,6 @@ tbody td {
     cursor: not-allowed;
 }
 
-/* Кастомное модальное окно (Alert) */
 .custom-modal {
     position: fixed;
     inset: 0;
