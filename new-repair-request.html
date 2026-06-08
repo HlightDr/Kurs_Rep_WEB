@@ -1,88 +1,69 @@
-    <!DOCTYPE html>
-    <html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Новая заявка на ремонт</title>
-        <link rel="stylesheet" href="css/new-repair-request.css">
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>Новая заявка на ремонт</h1>
-            </div>
-
-            <div class="main-content">
-                <div class="card">
-                    <div class="form-group">
-                        <label for="device-select">Выберите ваш регистратор</label>
-                        <select id="device-select">
-                            <option value="">Выберите устройство...</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="form-group">
-                        <label for="problem-description">Подробно опишите проблему</label>
-                        <textarea id="problem-description" placeholder="напр., датчик не реагирует, ошибка записи SD-карты..."></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="form-group">
-                        <label>Фотографии повреждений (ссылки)</label>
-                        <input type="text" id="photo-url" placeholder="https://disk.yandex.ru/...">
-                        <p class="helper-text">Вставьте ссылку на Яндекс.Диск или Google Drive</p>
-                    </div>
-                    <div class="separator"></div>
-                    <div class="form-group">
-                        <label>Видео повреждений (ссылка)</label>
-                        <input type="text" id="video-url" placeholder="https://drive.google.com/...">
-                        <p class="helper-text">Вставьте ссылку на видео</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="form-group">
-                        <label>Или загрузите фотографии (до 9 шт.)</label>
-                        <div id="photos-container">
-                            <input type="file" class="photo-input" accept="image/*">
-                        </div>
-                        <button type="button" id="add-photo-btn" class="btn-outline" style="margin-top: 8px;">+ Добавить ещё фото</button>
-                        <div id="photos-preview" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;"></div>
-                        <p class="helper-text">Выберите до 9 фотографий (JPG, PNG)</p>
-                    </div>
-                    <div class="separator"></div>
-                    <div class="form-group">
-                        <label>Или загрузите видео (одно)</label>
-                        <input type="file" id="video-file" accept="video/*">
-                        <div id="video-preview" style="margin-top: 10px;"></div>
-                        <p class="helper-text">Одно видео (не более 50 МБ)</p>
-                    </div>
-                </div>
-
-                <div class="submit-section">
-                    <button id="submitBottomBtn" class="btn btn-primary btn-large">Отправить заявку на ремонт</button>
-                </div>
-            </div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новая заявка на ремонт</title>
+    <link rel="stylesheet" href="css/new-repair-request.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Новая заявка на ремонт</h1>
         </div>
 
-        <div id="customAlert" class="custom-modal hidden">
-            <div class="custom-modal-content">
-                <div class="custom-modal-header">
-                    <h3 id="alertTitle">Уведомление</h3>
-                    <button class="custom-modal-close" id="alertClose">&times;</button>
-                </div>
-                <div class="custom-modal-body">
-                    <p id="alertMessage"></p>
-                </div>
-                <div class="custom-modal-footer">
-                    <button id="alertOk" class="btn-primary">OK</button>
+        <div class="main-content">
+            <div class="card">
+                <div class="form-group">
+                    <label for="device-select">Выберите ваш регистратор</label>
+                    <select id="device-select">
+                        <option value="">Выберите устройство...</option>
+                    </select>
                 </div>
             </div>
-        </div>
 
-        <script src="js/new-repair-request.js"></script>
-    </body>
-    </html>
+            <div class="card">
+                <div class="form-group">
+                    <label for="problem-description">Подробно опишите проблему</label>
+                    <textarea id="problem-description" placeholder="напр., датчик не реагирует, ошибка записи SD-карты..."></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="form-group">
+                    <label>Фотографии повреждений (ссылки)</label>
+                    <input type="text" id="photo-url" placeholder="https://disk.yandex.ru/...">
+                    <p class="helper-text">Вставьте ссылку на Яндекс.Диск или Google Drive</p>
+                </div>
+                <div class="separator"></div>
+                <div class="form-group">
+                    <label>Видео повреждений (ссылка)</label>
+                    <input type="text" id="video-url" placeholder="https://drive.google.com/...">
+                    <p class="helper-text">Вставьте ссылку на видео</p>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button id="submitBottomBtn" class="btn btn-primary btn-large">Отправить заявку на ремонт</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customAlert" class="custom-modal hidden">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <h3 id="alertTitle">Уведомление</h3>
+                <button class="custom-modal-close" id="alertClose">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <p id="alertMessage"></p>
+            </div>
+            <div class="custom-modal-footer">
+                <button id="alertOk" class="btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/new-repair-request.js"></script>
+</body>
+</html>
