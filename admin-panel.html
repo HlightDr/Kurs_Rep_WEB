@@ -42,7 +42,6 @@
         </div>
 
         <div class="main-content">
-            <!-- Заявки на Ремонт -->
             <div id="repair-requests-tab" class="tab-content">
                 <div class="page-header">
                     <h2>Заявки на Ремонт</h2>
@@ -52,23 +51,25 @@
                     <div class="filter-section">
                         <label for="status-filter">Фильтр по статусу:</label>
                         <select id="status-filter" onchange="filterRepairsByStatus(this.value)">
-                        <option value="all">Все Статусы</option>
-                        <option value="pending_review">На рассмотрении</option>
-                        <option value="in-progress">В Процессе</option>
-                        <option value="pending">Ожидание</option>
-                        <option value="completed">Завершено</option>
-                    </select>
+                            <option value="all">Все Статусы</option>
+                            <option value="pending_review">На рассмотрении</option>
+                            <option value="in-progress">В процессе</option>
+                            <option value="pending">Ожидание</option>
+                            <option value="completed">Завершено</option>
+                        </select>
                     </div>
                     <div class="table-container">
                         <table>
                             <thead>
-                                <tr><th>ID Заявки</th><th>Модель Устройства</th><th>Статус</th><th>Дата Создания</th><th>Действия</th></tr>
+                                <tr>
+                                    <th>ID Заявки</th>
+                                    <th>Модель Устройства</th>
+                                    <th>Статус</th>
+                                    <th>Дата Создания</th>
+                                    <th>Действия</th>
+                                </tr>
                             </thead>
-                            <tbody id="repair-table-body">
-                                <tr data-status="in-progress"><td class="font-medium">REQ-2024-001</td><td>VibLog-3000 CNC Monitor</td><td>VL3K-88421-A</td><td><span class="status-badge in-progress">В Процессе</span></td><td>2024-03-15</td><td><div class="actions-cell"><button class="btn btn-primary">Обновить Статус</button><button class="btn btn-secondary" onclick="viewDetails('REQ-2024-001')">Подробности</button></div></td></tr>
-                                <tr data-status="pending"><td class="font-medium">REQ-2024-002</td><td>DataHub-500 Machine Logger</td><td>DH500-12456-B</td><td><span class="status-badge pending">Ожидание</span></td><td>2024-03-18</td><td><div class="actions-cell"><button class="btn btn-primary">Обновить Статус</button><button class="btn btn-secondary" onclick="viewDetails('REQ-2024-002')">Подробности</button></div></td></tr>
-                                <tr data-status="completed"><td class="font-medium">REQ-2024-003</td><td>ProLog-X Industrial Recorder</td><td>PLX-99823-C</td><td><span class="status-badge completed">Завершено</span></td><td>2024-03-10</td><td><div class="actions-cell"><button class="btn btn-primary">Обновить Статус</button><button class="btn btn-secondary" onclick="viewDetails('REQ-2024-003')">Подробности</button></div></td></tr>
-                            </tbody>
+                            <tbody id="repair-table-body"></tbody>
                         </table>
                     </div>
                 </div>
@@ -98,33 +99,14 @@
                                     <th>Действия</th>
                                 </tr>
                             </thead>
-                            <tbody id="users-table-body">
-                                <tr data-username="Иван Петров" data-company="ООО «ТехноПром»" data-email="i.petrov@cnc-tech.ru" data-role="admin" data-status="active">
-                                    <td class="font-medium">Иван Петров</td>
-                                    <td>ООО «ТехноПром»</td>
-                                    <td>i.petrov@cnc-tech.ru</td>
-                                    <td><select class="role-select admin" onchange="changeRole(this)"><option value="customer">Клиент</option><option value="admin" selected>Администратор</option></select></td>
-                                    <td><span class="status-badge active">Активен</span></td>
-                                    <td><button class="btn btn-danger" onclick="toggleUserStatus(this)">Блокировать</button></td>
-                                </tr>
-                                <tr data-username="Дмитрий Соколов" data-company="АО «ЛоггерСистемс»" data-email="d.sokolov@logger-systems.ru" data-role="customer" data-status="blocked">
-                                    <td class="font-medium">Дмитрий Соколов</td>
-                                    <td>АО «ЛоггерСистемс»</td>
-                                    <td>d.sokolov@logger-systems.ru</td>
-                                    <td><select class="role-select customer" onchange="changeRole(this)"><option value="customer" selected>Клиент</option><option value="admin">Администратор</option></select></td>
-                                    <td><span class="status-badge blocked">Заблокирован</span></td>
-                                    <td><button class="btn btn-success" onclick="toggleUserStatus(this)">Разблокировать</button></td>
-                                </tr>
-                            </tbody>
+                            <tbody id="users-table-body"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <div style="position: fixed; bottom: 20px; right: 10px; z-index: 1000;">
-                <button id="gotoDashboardBtn" style="background-color: #2563eb; color: white; border: none; border-radius: 40px; padding: 10px 20px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                    На главную
-                </button>
+            <div class="goto-dashboard-container">
+                <button id="gotoDashboardBtn" class="goto-dashboard-btn">На главную</button>
             </div>
 
             <div id="spare-parts-tab" class="tab-content hidden">
@@ -144,24 +126,11 @@
                                 <tr>
                                     <th>Название Запчасти</th>
                                     <th>Поставщик</th>
-                                    <th>Цена (₽)</th>
+                                    <th>Цена (Б)</th>
                                     <th>Действия</th>
                                 </tr>
                             </thead>
-                            <tbody id="parts-table-body">
-                                <tr data-id="SP001">
-                                    <td class="font-medium">Датчик вибрации VSM-300</td>
-                                    <td>ООО «ТехноСервис»</td>
-                                    <td class="font-medium">4 500 ₽</td>
-                                    <td><div class="actions-cell"><button class="btn btn-primary" onclick="editPart(this)">Изменить</button><button class="btn btn-danger" onclick="deletePart(this)">Удалить</button></div></td>
-                                </tr>
-                                <tr data-id="SP002">
-                                    <td class="font-medium">SD карта промышленная 32GB</td>
-                                    <td>ООО «ЭлектронКомплект»</td>
-                                    <td class="font-medium">1 200 ₽</td>
-                                    <td><div class="actions-cell"><button class="btn btn-primary" onclick="editPart(this)">Изменить</button><button class="btn btn-danger" onclick="deletePart(this)">Удалить</button></div></td>
-                                </tr>
-                            </tbody>
+                            <tbody id="parts-table-body"></tbody>
                         </table>
                     </div>
                 </div>
@@ -171,28 +140,12 @@
                 <div class="page-header"><h2>Статистика</h2><p>Аналитика и показатели ремонтных операций</p></div>
                 <div class="stats-container">
                     <div class="grid-2">
-                        <div class="stats-card"><h3>Частые причины поломок (Ф-11)</h3>
-                            <div class="bar-item"><div class="bar-label">Выход датчика вибрации</div><div class="bar-bg"><div class="bar-fill" style="width: 100%">18</div></div></div>
-                            <div class="bar-item"><div class="bar-label">Ошибка записи на SD-карту</div><div class="bar-bg"><div class="bar-fill" style="width: 66%">12</div></div></div>
-                            <div class="bar-item"><div class="bar-label">Разряд аккумулятора</div><div class="bar-bg"><div class="bar-fill" style="width: 50%">9</div></div></div>
-                            <div class="bar-item"><div class="bar-label">Сбой прошивки</div><div class="bar-bg"><div class="bar-fill" style="width: 33%">6</div></div></div>
-                            <div class="bar-item"><div class="bar-label">Отказ основной платы</div><div class="bar-bg"><div class="bar-fill" style="width: 22%">4</div></div></div>
-                            <div style="margin-top: 20px; text-align: center; font-size: 13px; color: #6B7280;">Максимум: 18 случаев</div>
-                        </div>
-                        <div class="stats-card"><h3>Продажи по регионам (Ф-12)</h3>
-                            <div class="pie-container"><div class="pie-chart"></div><div class="pie-legend">
-                                <div class="legend-item"><div class="legend-color" style="background-color: #3B82F6;"></div><span>Москва</span><div class="legend-value">45%</div></div>
-                                <div class="legend-item"><div class="legend-color" style="background-color: #60A5FA;"></div><span>Санкт-Петербург</span><div class="legend-value">25%</div></div>
-                                <div class="legend-item"><div class="legend-color" style="background-color: #93C5FD;"></div><span>Новосибирск</span><div class="legend-value">15%</div></div>
-                                <div class="legend-item"><div class="legend-color" style="background-color: #BFDBFE;"></div><span>Владивосток</span><div class="legend-value">10%</div></div>
-                                <div class="legend-item"><div class="legend-color" style="background-color: #DBEAFE;"></div><span>Другие регионы</span><div class="legend-value">5%</div></div>
-                            </div></div>
-                        </div>
+                        <div class="stats-card"><h3>Частые причины поломок (Ф-11)</h3></div>
+                        <div class="stats-card"><h3>Продажи по регионам (Ф-12)</h3></div>
                     </div>
-                    <div class="grid-3">
-                        <div class="stat-card"><div class="stat-label">Всего ремонтов (март)</div><div class="stat-value">127</div><div class="stat-trend trend-up">+12% к прошлому месяцу</div></div>
-                        <div class="stat-card"><div class="stat-label">Среднее время ремонта</div><div class="stat-value">3.2 дня</div><div class="stat-trend trend-up">-8% улучшение</div></div>
-                        <div class="stat-card"><div class="stat-label">Удовлетворённость клиентов</div><div class="stat-value">94%</div><div class="stat-trend trend-neutral">На основе 89 отзывов</div></div>
+                    <div class="stat-card stat-card-centered">
+                        <div class="stat-label">Всего ремонтов</div>
+                        <div class="stat-value" id="total-repairs-value">0</div>
                     </div>
                 </div>
             </div>
@@ -219,71 +172,66 @@
                     <input type="text" id="supplier" required>
                 </div>
                 <div class="form-group">
-                    <label for="price">Цена (₽)</label>
+                    <label for="price">Цена (Б)</label>
                     <input type="number" id="price" required>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn-primary" style="width: 100%; padding: 10px;">Добавить</button>
-                    <button type="button" onclick="closeModal()" style="width: 100%; padding: 10px; background-color: #E5E7EB; color: #374151;">Отмена</button>
+                    <button type="submit" class="btn-primary modal-submit-btn">Добавить</button>
+                    <button type="button" onclick="closeModal()" class="modal-cancel-btn">Отмена</button>
                 </div>
             </form>
         </div>
     </div>
 
-<div id="confirm-modal" class="modal-overlay hidden">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 id="confirmTitle">Подтверждение</h3>
-            <button class="close-btn" onclick="closeConfirmModal()">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p id="confirmMessage"></p>
-        </div>
-        <div class="modal-footer">
-            <button id="confirmYes" class="btn-primary">Да</button>
-            <button id="confirmNo" class="btn-secondary">Нет</button>
+    <div id="confirm-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Подтверждение</h3>
+                <button class="close-btn" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmYes" class="btn-primary">Да</button>
+                <button id="confirmNo" class="btn-secondary">Нет</button>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="prompt-modal" class="modal-overlay hidden">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 id="promptTitle">Ввод данных</h3>
-            <button class="close-btn" onclick="closePromptModal()">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p id="promptMessage"></p>
-            <input type="text" id="promptInput" class="form-input" style="width:100%; margin-top:8px;">
-        </div>
-        <div class="modal-footer">
-            <button id="promptOk" class="btn-primary">OK</button>
-            <button id="promptCancel" class="btn-secondary">Отмена</button>
+    <div id="prompt-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="promptTitle">Ввод данных</h3>
+                <button class="close-btn" onclick="closePromptModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="promptMessage"></p>
+                <input type="text" id="promptInput" class="form-input prompt-input">
+            </div>
+            <div class="modal-footer">
+                <button id="promptOk" class="btn-primary">OK</button>
+                <button id="promptCancel" class="btn-secondary">Отмена</button>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="statusModal" class="modal-overlay hidden">
-    <div class="modal">
-        <div class="modal-header">
-            <h3>Изменить статус заявки</h3>
-            <button class="close-btn" onclick="closeStatusModal()">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p>Выберите новый статус:</p>
-            <select id="statusSelect" class="form-input">
-                <option value="pending_review">На рассмотрении</option>
-                <option value="in-progress">В процессе</option>
-                <option value="pending">Ожидание</option>
-                <option value="completed">Завершено</option>
-            </select>
-        </div>
-        <div class="modal-footer">
-            <button id="statusSaveBtn" class="btn-primary">Сохранить</button>
-            <button id="statusCancelBtn" class="btn-secondary">Отмена</button>
+    <div id="statusModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Изменить статус заявки</h3>
+                <button class="close-btn" onclick="closeStatusModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Выберите новый статус:</p>
+                <select id="statusSelect" class="form-input"></select>
+            </div>
+            <div class="modal-footer">
+                <button id="statusSaveBtn" class="btn-primary">Сохранить</button>
+                <button id="statusCancelBtn" class="btn-secondary">Отмена</button>
+            </div>
         </div>
     </div>
-</div>
 
     <script src="js/admin-panel.js"></script>
 </body>
