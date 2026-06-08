@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/customer_dashboard.css">
 </head>
 <body>
-    <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+    <svg class="svg-sprite" xmlns="http://www.w3.org/2000/svg">
         <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"/>
             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -24,10 +24,8 @@
         </symbol>
     </svg>
 
-    <div style="position: fixed; bottom: 20px; right: 10px; z-index: 1000;">
-        <button id="gotoAdminBtn" style="display: none; background-color: #2563eb; color: white; border: none; border-radius: 40px; padding: 10px 20px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-            Админ-панель
-        </button>
+    <div class="admin-btn-container">
+        <button id="gotoAdminBtn" class="admin-btn">Админ-панель</button>
     </div>
 
     <main class="main">
@@ -43,8 +41,7 @@
                 <div class="space-y-3">
                     <div class="card">
                         <h2 class="card-title" id="recordersLink">Мои зарегистрированные регистраторы</h2>
-                        <div class="recorder-list">
-                        </div>
+                        <div class="recorder-list"></div>
                     </div>
 
                     <div class="card">
@@ -55,13 +52,13 @@
                                     <svg class="icon"><use href="#icon-check-circle-2"/></svg>
                                 </div>
                                 <div class="repair-details">
-                                    <div class="repair-title">SpyderLog SL-3</div>
-                                    <div class="repair-description">Сбой прошивки - перепрошит главный контроллер и обновление до v3.2.1</div>
+                                    <div class="repair-title"></div>
+                                    <div class="repair-description"></div>
                                 </div>
                             </div>
                             <div class="repair-footer">
-                                <div class="repair-date"><span>28 марта 2026</span></div>
-                                <div class="repair-price"><span>8 500 ₽</span></div>
+                                <div class="repair-date"><span></span></div>
+                                <div class="repair-price"><span></span></div>
                             </div>
                         </div>
                     </div>
@@ -70,18 +67,17 @@
                 <div class="space-y-3">
                     <div class="card">
                         <h2 class="card-title">Активные заявки на ремонт</h2>
-                        <div id="active-requests-container">
-                        </div>
+                        <div id="active-requests-container"></div>
                     </div>
 
                     <div class="card">
-                    <div class="messages-header">
-                        <h2 class="card-title" style="margin-bottom:0;">Последние сообщения</h2>
+                        <div class="messages-header">
+                            <h2 class="card-title messages-title">Последние сообщения</h2>
+                        </div>
+                        <div id="recent-messages-container">
+                            <p>Загрузка...</p>
+                        </div>
                     </div>
-                    <div id="recent-messages-container">
-                        <p>Загрузка...</p>
-                    </div>
-                </div>
                 </div>
             </div>
         </div>
