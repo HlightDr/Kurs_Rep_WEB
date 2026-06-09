@@ -53,12 +53,12 @@ async function loadRecorders() {
 function addRecorderToTable(recorder) {
     const tbody = document.querySelector('.table-container tbody');
     const row = tbody.insertRow();
-    const org = recorder.owner || '';
+    const org = recorder.owner || recorder.ownerName || '';
     row.innerHTML = `
         <td class="device-model">${escapeHtml(recorder.model)}</td>
         <td class="serial-number">${escapeHtml(recorder.sn)}</td>
         <td class="owner">${escapeHtml(org)}</td>
-        <td class="date">${recorder.date}</td>
+        <td class="date">${recorder.date || ''}</td>
         <td><button class="view-history-button" data-sn="${escapeHtml(recorder.sn)}" data-model="${escapeHtml(recorder.model)}">Посмотреть историю ремонта</button></td>
     `;
     const btn = row.querySelector('.view-history-button');
@@ -100,7 +100,7 @@ document.querySelector('form').addEventListener('submit', async (e) => {
         else if (serial.startsWith('VM450')) model = 'VibroMaster VM-450';
         else if (serial.startsWith('T12')) model = 'ThermoRec T-12';
         else if (serial.startsWith('SL3')) model = 'SpyderLog SL-3';
-        const owner = 'Новый пользователь';
+        const owner = sessionStorage.getItem('username') || 'Новый пользователь';
         const now = new Date();
         const date = now.toLocaleDateString('ru-RU');
         const newRecorder = { model, sn: serial, owner, date };
