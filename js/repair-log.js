@@ -5,6 +5,15 @@
     }
 })();
 
+function showPreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.remove('hidden');
+}
+function hidePreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.add('hidden');
+}
+
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function(m) {
@@ -42,58 +51,58 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.querySelector('h1').innerHTML = 'История ремонтов';
     }
 
-    let allRequests = [];
+    showPreloader();
     try {
         const response = await fetch('http://localhost:3000/repairRequests');
-        allRequests = await response.json();
+        const allRequests = await response.json();
+        const deviceRequests = allRequests.filter(req => req.deviceSn === sn);
+        const timelineContainer = document.getElementById('timelineItems');
+        timelineContainer.innerHTML = '';
+
+        if (deviceRequests.length === 0) {
+            timelineContainer.innerHTML = '<div class="empty-state"><p>Нет ремонтов для этого устройства</p></div>';
+            return;
+        }
+
+        deviceRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        deviceRequests.forEach(req => {
+            const item = document.createElement('div');
+            item.className = 'timeline-item';
+            const statusClass = req.status === 'completed' ? 'status-completed' :
+                                req.status === 'in-progress' ? 'status-in-progress' : 'status-waiting';
+            const statusText = req.status === 'completed' ? 'Завершено' :
+                               req.status === 'in-progress' ? 'В процессе' : 'Ожидание';
+
+            item.innerHTML = `
+                <div class="timeline-dot-container"><div class="timeline-dot"></div></div>
+                <div class="repair-card">
+                    <div class="repair-header">
+                        <svg class="icon"><use href="#icon-doc"/></svg>
+                        <h3 class="repair-id">${escapeHtml(req.id)}</h3>
+                    </div>
+                    <div class="repair-date">
+                        <svg class="icon"><use href="#icon-calendar"/></svg>
+                        <time>${new Date(req.createdAt).toLocaleDateString('ru-RU')}</time>
+                    </div>
+                    <p class="repair-issue"><span class="label">Проблема:</span> ${escapeHtml(req.problem)}</p>
+                    <div class="status-container"><span class="status-badge ${statusClass}">${statusText}</span></div>
+                    <button class="view-details" data-id="${req.id}">Подробнее →</button>
+                </div>
+            `;
+            timelineContainer.appendChild(item);
+        });
+
+        document.querySelectorAll('.view-details').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const repairId = btn.getAttribute('data-id');
+                if (repairId) window.location.href = `repair-request.html?id=${encodeURIComponent(repairId)}`;
+            });
+        });
     } catch (error) {
         console.error('Ошибка загрузки заявок:', error);
         document.querySelector('.timeline-items').innerHTML = '<p>Ошибка загрузки данных</p>';
-        return;
+    } finally {
+        hidePreloader();
     }
-
-    const deviceRequests = allRequests.filter(req => req.deviceSn === sn);
-    const timelineContainer = document.getElementById('timelineItems');
-    timelineContainer.innerHTML = '';
-
-    if (deviceRequests.length === 0) {
-        timelineContainer.innerHTML = '<div class="empty-state"><p>Нет ремонтов для этого устройства</p></div>';
-        return;
-    }
-
-    deviceRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-    deviceRequests.forEach(req => {
-        const item = document.createElement('div');
-        item.className = 'timeline-item';
-        const statusClass = req.status === 'completed' ? 'status-completed' :
-                            req.status === 'in-progress' ? 'status-in-progress' : 'status-waiting';
-        const statusText = req.status === 'completed' ? 'Завершено' :
-                           req.status === 'in-progress' ? 'В процессе' : 'Ожидание';
-
-        item.innerHTML = `
-            <div class="timeline-dot-container"><div class="timeline-dot"></div></div>
-            <div class="repair-card">
-                <div class="repair-header">
-                    <svg class="icon"><use href="#icon-doc"/></svg>
-                    <h3 class="repair-id">${escapeHtml(req.id)}</h3>
-                </div>
-                <div class="repair-date">
-                    <svg class="icon"><use href="#icon-calendar"/></svg>
-                    <time>${new Date(req.createdAt).toLocaleDateString('ru-RU')}</time>
-                </div>
-                <p class="repair-issue"><span class="label">Проблема:</span> ${escapeHtml(req.problem)}</p>
-                <div class="status-container"><span class="status-badge ${statusClass}">${statusText}</span></div>
-                <button class="view-details" data-id="${req.id}">Подробнее →</button>
-            </div>
-        `;
-        timelineContainer.appendChild(item);
-    });
-
-    document.querySelectorAll('.view-details').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const repairId = btn.getAttribute('data-id');
-            if (repairId) window.location.href = `repair-request.html?id=${encodeURIComponent(repairId)}`;
-        });
-    });
 });
