@@ -4,14 +4,22 @@
     }
 })();
 
+function showPreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.remove('hidden');
+}
+function hidePreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.add('hidden');
+}
+
 let currentRequestId = null;
 let currentRequestData = null;
 let isAdmin = false;
 
 function formatPrice(price) {
-    return price.toLocaleString('ru-RU') + ' ₽';
+    return price.toLocaleString('ru-RU') + ' Б';
 }
-
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function(m) {
@@ -32,7 +40,7 @@ async function loadSparePartsFromServer() {
             parts.forEach(part => {
                 const option = document.createElement('option');
                 option.value = part.price;
-                option.textContent = `${part.name} (${part.price.toLocaleString('ru-RU')} ₽)`;
+                option.textContent = `${part.name} (${part.price.toLocaleString('ru-RU')} Б)`;
                 select.appendChild(option);
             });
         }
@@ -42,7 +50,6 @@ async function loadSparePartsFromServer() {
         return [];
     }
 }
-
 async function loadWorkTypesFromServer() {
     try {
         const response = await fetch('http://localhost:3000/workTypes');
@@ -53,7 +60,7 @@ async function loadWorkTypesFromServer() {
             works.forEach(work => {
                 const option = document.createElement('option');
                 option.value = work.price;
-                option.textContent = `${work.name} (${work.price.toLocaleString('ru-RU')} ₽)`;
+                option.textContent = `${work.name} (${work.price.toLocaleString('ru-RU')} Б)`;
                 select.appendChild(option);
             });
         }
@@ -63,7 +70,6 @@ async function loadWorkTypesFromServer() {
         return [];
     }
 }
-
 async function loadFaultCausesFromServer() {
     try {
         const response = await fetch('http://localhost:3000/faultCauses');
@@ -84,6 +90,7 @@ async function loadFaultCausesFromServer() {
 }
 
 async function loadRequestById(id) {
+    showPreloader();
     try {
         const response = await fetch(`http://localhost:3000/repairRequests/${id}`);
         if (!response.ok) throw new Error('Заявка не найдена');
@@ -97,7 +104,7 @@ async function loadRequestById(id) {
             let statusText = '';
             switch (request.status) {
                 case 'pending_review': statusText = 'На рассмотрении'; break;
-                case 'in-progress': statusText = 'В работе'; break;
+                case 'in-progress': statusText = 'В процессе'; break;
                 case 'pending': statusText = 'Ожидание'; break;
                 case 'completed': statusText = 'Завершено'; break;
                 default: statusText = request.status;
@@ -115,15 +122,45 @@ async function loadRequestById(id) {
             if (problemSpan) problemSpan.innerText = request.problem;
         }
 
-        const diagnosticTextEl = document.querySelector('.diagnostic-text');
-        if (diagnosticTextEl && request.diagnosticText) {
-            diagnosticTextEl.innerHTML = `<strong>Диагностика завершена:</strong> ${escapeHtml(request.diagnosticText)}`;
+        const diagnosticContainer = document.querySelector('.diagnostic-text');
+        if (diagnosticContainer) {
+            if (isAdmin) {
+                const textarea = document.createElement('textarea');
+                textarea.id = 'diagnosticTextArea';
+                textarea.className = 'diagnostic-textarea';
+                textarea.value = request.diagnosticText || '';
+                textarea.rows = 5;
+                const saveBtn = document.createElement('button');
+                saveBtn.textContent = 'Сохранить диагностику';
+                saveBtn.className = 'btn btn-primary';
+                saveBtn.style.marginTop = '12px';
+                diagnosticContainer.innerHTML = '';
+                diagnosticContainer.appendChild(textarea);
+                diagnosticContainer.appendChild(saveBtn);
+                saveBtn.addEventListener('click', async () => {
+                    const newDiagnostic = textarea.value;
+                    if (!currentRequestId) return;
+                    showPreloader();
+                    try {
+                        await fetch(`http://localhost:3000/repairRequests/${currentRequestId}`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ diagnosticText: newDiagnostic })
+                        });
+                        if (currentRequestData) currentRequestData.diagnosticText = newDiagnostic;
+                        await showAlert('Диагностика сохранена', 'Успех');
+                    } catch (error) {
+                        console.error(error);
+                        await showAlert('Ошибка сохранения', 'Ошибка');
+                    } finally {
+                        hidePreloader();
+                    }
+                });
+            } else {
+                const text = request.diagnosticText && request.diagnosticText.trim() !== '' ? request.diagnosticText : 'Диагностика ещё не проведена.';
+                diagnosticContainer.innerHTML = `<strong>Диагностика:</strong> ${escapeHtml(text)}`;
+            }
         }
-
-        const photoInput = document.getElementById('photo-url');
-        if (photoInput && request.photoUrl) photoInput.value = request.photoUrl;
-        const videoInput = document.getElementById('video-url');
-        if (videoInput && request.videoUrl) videoInput.value = request.videoUrl;
 
         if (request.selectedFaultCauses && request.selectedFaultCauses.length) {
             const causeSelect = document.getElementById('fault-causes-select');
@@ -133,7 +170,6 @@ async function loadRequestById(id) {
                 });
             }
         }
-
         if (request.selectedParts && request.selectedParts.length) {
             const partsSelect = document.getElementById('parts-select');
             if (partsSelect) {
@@ -144,86 +180,61 @@ async function loadRequestById(id) {
                 });
             }
         }
-
         if (request.selectedWork) {
             const workSelect = document.getElementById('work-select');
             if (workSelect) {
                 Array.from(workSelect.options).forEach(opt => {
                     const workName = opt.textContent.split('(')[0].trim();
-                    if (workName === request.selectedWork.name) {
-                        opt.selected = true;
-                    }
+                    if (workName === request.selectedWork.name) opt.selected = true;
                 });
             }
         }
-
         if (request.timelineState && request.timelineState.length === 6) {
             localStorage.setItem('repairTimelineState', JSON.stringify(request.timelineState));
             loadTimelineState();
         }
-
         updateCost();
         renderFinalCostTable();
-
     } catch (error) {
         console.error(error);
         await showAlert('Заявка не найдена', 'Ошибка');
         window.location.href = 'customer_dashboard.html';
+    } finally {
+        hidePreloader();
     }
 }
 
 async function saveCurrentRequest() {
     if (!currentRequestId) return;
-
     const selectedFaultCauses = [];
     const causeSelect = document.getElementById('fault-causes-select');
     if (causeSelect) {
-        for (let opt of causeSelect.options) {
-            if (opt.selected) selectedFaultCauses.push(opt.value);
-        }
+        for (let opt of causeSelect.options) if (opt.selected) selectedFaultCauses.push(opt.value);
     }
-
     const selectedParts = [];
     const partsSelect = document.getElementById('parts-select');
     if (partsSelect) {
-        for (let opt of partsSelect.options) {
-            if (opt.selected) {
-                const name = opt.textContent.split('(')[0].trim();
-                const price = parseInt(opt.value);
-                selectedParts.push({ name, price });
-            }
+        for (let opt of partsSelect.options) if (opt.selected) {
+            const name = opt.textContent.split('(')[0].trim();
+            const price = parseInt(opt.value);
+            selectedParts.push({ name, price });
         }
     }
-
     const workSelect = document.getElementById('work-select');
     let selectedWork = null;
-    if (workSelect) {
+    if (workSelect && workSelect.selectedIndex !== -1) {
         const fullText = workSelect.options[workSelect.selectedIndex].textContent;
-        const name = fullText.replace(/\s*\([\d\s]+₽\)\s*$/, '').trim();
+        const name = fullText.replace(/\s*\([\d\s]+Б\)\s*$/, '').trim();
         const price = parseInt(workSelect.value);
         selectedWork = { name, price };
     }
-
     const partsTotal = selectedParts.reduce((sum, p) => sum + p.price, 0);
     const workCost = selectedWork ? selectedWork.price : 0;
     const totalEstimate = partsTotal + workCost;
-
     let timelineState = null;
     const savedTimeline = localStorage.getItem('repairTimelineState');
-    if (savedTimeline) {
-        timelineState = JSON.parse(savedTimeline);
-    }
-
-    const updateData = {
-        selectedFaultCauses,
-        selectedParts,
-        selectedWork,
-        partsTotal,
-        workCost,
-        totalEstimate,
-        timelineState
-    };
-
+    if (savedTimeline) timelineState = JSON.parse(savedTimeline);
+    const updateData = { selectedFaultCauses, selectedParts, selectedWork, partsTotal, workCost, totalEstimate, timelineState };
     try {
         await fetch(`http://localhost:3000/repairRequests/${currentRequestId}`, {
             method: 'PATCH',
@@ -243,7 +254,7 @@ function updateCost() {
         for (let option of partsSelect.options) if (option.selected) partsTotal += parseInt(option.value);
     }
     const workSelect = document.getElementById('work-select');
-    let workCost = workSelect ? parseInt(workSelect.value) : 3000;
+    let workCost = workSelect ? parseInt(workSelect.value) : 0;
     document.getElementById('parts-total').textContent = formatPrice(partsTotal);
     document.getElementById('work-cost').textContent = formatPrice(workCost);
     document.getElementById('total-estimate').textContent = formatPrice(partsTotal + workCost);
@@ -252,27 +263,22 @@ function updateCost() {
 function renderFinalCostTable() {
     const container = document.getElementById('final-cost-table-container');
     if (!container) return;
-
     const partsSelect = document.getElementById('parts-select');
     const workSelect = document.getElementById('work-select');
     let parts = [], work = null;
-
     if (partsSelect) {
-        for (let opt of partsSelect.options) {
-            if (opt.selected) {
-                const name = opt.textContent.split('(')[0].trim();
-                const price = parseInt(opt.value);
-                parts.push({ name, price });
-            }
+        for (let opt of partsSelect.options) if (opt.selected) {
+            const name = opt.textContent.split('(')[0].trim();
+            const price = parseInt(opt.value);
+            parts.push({ name, price });
         }
     }
-    if (workSelect) {
+    if (workSelect && workSelect.selectedIndex !== -1) {
         const fullText = workSelect.options[workSelect.selectedIndex].textContent;
-        const name = fullText.replace(/\s*\([\d\s]+₽\)\s*$/, '').trim();
+        const name = fullText.replace(/\s*\([\d\s]+Б\)\s*$/, '').trim();
         const price = parseInt(workSelect.value);
         work = { name, price };
     }
-
     let rowsHtml = '';
     if (parts.length > 0) {
         rowsHtml += '<tr class="section-header"><td colspan="2" class="font-medium">Запчасти</td></tr>';
@@ -286,14 +292,11 @@ function renderFinalCostTable() {
     }
     const total = parts.reduce((s, p) => s + p.price, 0) + (work ? work.price : 0);
     rowsHtml += `<tr class="total-row"><td>Итого</td><td class="text-right">${formatPrice(total)}</td></tr>`;
-
     const tableHtml = `<table class="cost-table"><thead><tr><th>Наименование</th><th class="text-right">Цена</th></tr></thead><tbody>${rowsHtml}</tbody></table>`;
     container.innerHTML = tableHtml;
 }
 
-function getTimelineSteps() {
-    return document.querySelectorAll('.timeline-step');
-}
+function getTimelineSteps() { return document.querySelectorAll('.timeline-step'); }
 function saveTimelineState() {
     const steps = getTimelineSteps();
     const state = [];
@@ -304,9 +307,7 @@ function saveTimelineState() {
         else state.push('pending');
     });
     localStorage.setItem('repairTimelineState', JSON.stringify(state));
-    if (currentRequestId && isAdmin) {
-        saveCurrentRequest(); 
-    }
+    if (currentRequestId && isAdmin) saveCurrentRequest();
 }
 function loadTimelineState() {
     const saved = localStorage.getItem('repairTimelineState');
@@ -319,7 +320,7 @@ function loadTimelineState() {
         const label = step.querySelector('.timeline-label');
         dot.classList.remove('completed', 'active', 'pending');
         if (line) line.classList.remove('completed', 'pending');
-        label.classList.remove('completed', 'active', 'pending');
+        if (label) label.classList.remove('completed', 'active', 'pending');
         dot.classList.add(state[idx]);
         if (line) {
             if (state[idx] === 'completed' || (idx > 0 && state[idx-1] === 'completed')) {
@@ -330,14 +331,13 @@ function loadTimelineState() {
                 line.classList.remove('completed');
             }
         }
-        label.classList.add(state[idx]);
+        if (label) label.classList.add(state[idx]);
         if (state[idx] === 'active') {
-            const svg = dot.querySelector('svg');
-            if (svg) svg.remove();
-            if (!dot.querySelector('.inner-dot')) {
-                const inner = document.createElement('div');
-                inner.className = 'inner-dot';
-                dot.appendChild(inner);
+            const inner = dot.querySelector('.inner-dot');
+            if (!inner) {
+                const innerDot = document.createElement('div');
+                innerDot.className = 'inner-dot';
+                dot.appendChild(innerDot);
             }
         } else if (state[idx] === 'completed') {
             const inner = dot.querySelector('.inner-dot');
@@ -377,9 +377,11 @@ function makeTimelineInteractive() {
             dot.classList.remove('completed', 'active', 'pending');
             dot.classList.add(newState);
             const label = step.querySelector('.timeline-label');
-            label.classList.remove('completed', 'active', 'pending');
-            label.classList.add(newState);
-            saveTimelineState(); 
+            if (label) {
+                label.classList.remove('completed', 'active', 'pending');
+                label.classList.add(newState);
+            }
+            saveTimelineState();
         });
     });
 }
@@ -393,14 +395,14 @@ function checkAllStepsCompleted() {
     const statusBadge = document.querySelector('.status-badge');
     const timelineCard = document.querySelector('.timeline-card');
     if (allCompleted) {
-        timelineContainer.classList.add('all-completed');
+        if (timelineContainer) timelineContainer.classList.add('all-completed');
         if (statusBadge && statusBadge.innerText !== 'Завершено') {
-            statusBadge.textContent = 'Выполнено';
+            statusBadge.textContent = 'Завершено';
             statusBadge.classList.add('completed');
         }
         if (timelineCard) timelineCard.classList.add('completed');
     } else {
-        timelineContainer.classList.remove('all-completed');
+        if (timelineContainer) timelineContainer.classList.remove('all-completed');
         if (timelineCard) timelineCard.classList.remove('completed');
     }
 }
@@ -468,7 +470,6 @@ function showPrompt(message, defaultValue = '', title = 'Ввод данных')
 }
 
 let currentMessages = [];
-
 async function loadMessages(requestId) {
     try {
         const response = await fetch('http://localhost:3000/messages');
@@ -481,14 +482,9 @@ async function loadMessages(requestId) {
         console.error('Ошибка загрузки сообщений:', error);
     }
 }
-
 function renderMessages(messages) {
-    console.log('renderMessages called, count:', messages.length);
     const messagesContainer = document.getElementById('chatMessages');
-    if (!messagesContainer) {
-        console.error('chatMessages element not found!');
-        return;
-    }
+    if (!messagesContainer) return;
     messagesContainer.innerHTML = '';
     messages.forEach(msg => {
         const messageDiv = document.createElement('div');
@@ -502,9 +498,7 @@ function renderMessages(messages) {
         messagesContainer.appendChild(messageDiv);
     });
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    console.log('Messages rendered');
 }
-
 async function sendMessage(requestId, text) {
     if (!text.trim()) return;
     const role = sessionStorage.getItem('userRole');
@@ -518,6 +512,7 @@ async function sendMessage(requestId, text) {
         timestamp: new Date().toISOString(),
         read: false
     };
+    showPreloader();
     try {
         const response = await fetch('http://localhost:3000/messages', {
             method: 'POST',
@@ -534,46 +529,35 @@ async function sendMessage(requestId, text) {
         }
     } catch (error) {
         console.error('Ошибка отправки сообщения:', error);
+    } finally {
+        hidePreloader();
     }
 }
-
 function initChat() {
     const chatToggle = document.getElementById('chatToggle');
     const chatContainer = document.getElementById('chatContainer');
     const chatClose = document.getElementById('chatClose');
     const chatSend = document.getElementById('chatSend');
     const chatInput = document.getElementById('chatInput');
-
     if (!chatToggle || !chatContainer) return;
-
     chatContainer.classList.add('hidden');
     chatToggle.style.display = 'flex';
-
     chatToggle.addEventListener('click', () => {
         chatContainer.classList.remove('hidden');
         chatToggle.style.display = 'none';
-        if (currentRequestId && currentMessages.length === 0) {
-            loadMessages(currentRequestId);
-        }
+        if (currentRequestId && currentMessages.length === 0) loadMessages(currentRequestId);
     });
-
     chatClose.addEventListener('click', () => {
         chatContainer.classList.add('hidden');
         chatToggle.style.display = 'flex';
     });
-
     chatSend.addEventListener('click', () => {
-        if (currentRequestId) {
-            sendMessage(currentRequestId, chatInput.value);
-        }
+        if (currentRequestId) sendMessage(currentRequestId, chatInput.value);
     });
-
     chatInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            if (currentRequestId) {
-                sendMessage(currentRequestId, chatInput.value);
-            }
+            if (currentRequestId) sendMessage(currentRequestId, chatInput.value);
         }
     });
 }
@@ -587,11 +571,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     } else {
         adminOnlyBlocks.forEach(block => block.style.display = 'block');
     }
-
     await loadSparePartsFromServer();
     await loadWorkTypesFromServer();
     await loadFaultCausesFromServer();
-
     const partsSelect = document.getElementById('parts-select');
     const workSelect = document.getElementById('work-select');
     if (partsSelect && workSelect) {
@@ -607,78 +589,82 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
     const causeSelect = document.getElementById('fault-causes-select');
-    if (causeSelect) {
-        causeSelect.addEventListener('change', () => {
-            if (isAdmin) saveCurrentRequest();
-        });
-    }
-
+    if (causeSelect) causeSelect.addEventListener('change', () => { if (isAdmin) saveCurrentRequest(); });
     const urlParams = new URLSearchParams(window.location.search);
     const urlId = urlParams.get('id');
     if (urlId) {
         await loadRequestById(urlId);
-        await loadMessages(urlId);  
+        await loadMessages(urlId);
     } else {
         console.log('Нет ID заявки');
     }
-
     const savedTimeline = localStorage.getItem('repairTimelineState');
-    if (savedTimeline) {
-        loadTimelineState();
-    } else {
+    if (savedTimeline) loadTimelineState();
+    else {
         const defaultState = ['completed', 'completed', 'active', 'pending', 'pending', 'pending'];
         localStorage.setItem('repairTimelineState', JSON.stringify(defaultState));
         loadTimelineState();
     }
     makeTimelineInteractive();
-    initChat();   
-
-    document.querySelector('.back-button')?.addEventListener('click', () => {
-        window.location.href = 'customer_dashboard.html';
-    });
-
+    initChat();
+    document.querySelector('.back-button')?.addEventListener('click', () => window.location.href = 'customer_dashboard.html');
     const paymentModal = document.getElementById('paymentModal');
     const closePaymentBtn = document.getElementById('closePaymentBtn');
     const cancelPayBtn = document.getElementById('cancelPayBtn');
     const payConfirmBtn = document.getElementById('payConfirmBtn');
-
-    function closePaymentModal() {
-        paymentModal.classList.add('hidden');
-    }
-
-    document.querySelector('.approve-button').addEventListener('click', () => {
-        paymentModal.classList.remove('hidden');
-    });
-
+    function closePaymentModal() { paymentModal.classList.add('hidden'); }
+    document.querySelector('.approve-button').addEventListener('click', () => paymentModal.classList.remove('hidden'));
     closePaymentBtn?.addEventListener('click', closePaymentModal);
     cancelPayBtn?.addEventListener('click', closePaymentModal);
-
-    paymentModal?.addEventListener('click', (e) => {
-        if (e.target === paymentModal) closePaymentModal();
-    });
-
+    paymentModal?.addEventListener('click', (e) => { if (e.target === paymentModal) closePaymentModal(); });
     payConfirmBtn?.addEventListener('click', async () => {
-        const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
-        const expiry = document.getElementById('cardExpiry').value;
-        const cvv = document.getElementById('cardCvv').value;
+    const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+    const expiry = document.getElementById('cardExpiry').value;
+    const cvv = document.getElementById('cardCvv').value;
 
-        if (cardNumber.length < 16) {
-            await showAlert('Введите корректный номер карты (16 цифр)', 'Ошибка');
-            return;
-        }
-        if (!expiry.match(/^\d{2}\/\d{2}$/)) {
-            await showAlert('Введите срок в формате ММ/ГГ', 'Ошибка');
-            return;
-        }
-        if (!cvv.match(/^\d{3}$/)) {
-            await showAlert('Введите CVV (3 цифры)', 'Ошибка');
-            return;
-        }
+    if (cardNumber.length < 16) {
+        await showAlert('Введите корректный номер карты (16 цифр)', 'Ошибка');
+        return;
+    }
+    if (!expiry.match(/^\d{2}\/\d{2}$/)) {
+        await showAlert('Введите срок в формате ММ/ГГ', 'Ошибка');
+        return;
+    }
+    if (!cvv.match(/^\d{3}$/)) {
+        await showAlert('Введите CVV (3 цифры)', 'Ошибка');
+        return;
+    }
 
-        await showAlert('Оплата успешно проведена!', 'Успех');
+    try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const amount = document.getElementById('total-estimate').innerText;
+        const last4 = cardNumber.slice(-4);
+        const now = new Date();
+        const dateTime = now.toLocaleString('ru-RU');
+        const transactionId = 'TXN' + Date.now().toString().slice(-8);
+        const requestId = currentRequestId || 'неизвестно';
+
+        document.getElementById('receiptAmount').innerText = amount;
+        document.getElementById('receiptCardLast4').innerText = last4;
+        document.getElementById('receiptDateTime').innerText = dateTime;
+        document.getElementById('receiptRequestId').innerText = requestId;
+        document.getElementById('receiptTransactionId').innerText = transactionId;
+
         closePaymentModal();
-        
-        window.location.href = 'customer_dashboard.html';
-    });
+        document.getElementById('receiptModal').classList.remove('hidden');
+        hidePreloader();
 
+        const closeReceipt = () => {
+            document.getElementById('receiptModal').classList.add('hidden');
+            window.location.href = 'customer_dashboard.html';
+        };
+        document.getElementById('closeReceiptBtn').onclick = closeReceipt;
+        document.getElementById('receiptOkBtn').onclick = closeReceipt;
+    } catch (err) {
+        console.error(err);
+        await showAlert('Ошибка оплаты', 'Ошибка');
+        hidePreloader();
+    }
+});
 });
