@@ -10,7 +10,7 @@
       "videoUrl": "",
       "photoUrls": [],
       "videoUrlFile": "",
-      "status": "in-progress",
+      "status": "pending_review",
       "createdAt": "2026-03-20T10:00:00Z",
       "selectedFaultCauses": [
         "Выход из строя основного блока регистратора"
@@ -51,28 +51,32 @@
       "videoUrl": "",
       "photoUrls": [],
       "videoUrlFile": "",
-      "status": "pending_review",
+      "status": "completed",
       "createdAt": "2026-04-01T14:30:00Z",
       "selectedFaultCauses": [
         "Выход из строя блока датчиков"
       ],
       "selectedParts": [
         {
-          "name": "Датчик тока",
-          "price": 500
-        },
-        {
           "name": "Плата блока датчиков",
           "price": 120
+        },
+        {
+          "name": "Корпус мобильного регистратора",
+          "price": 120
+        },
+        {
+          "name": "Разъём питания",
+          "price": 25
         }
       ],
       "selectedWork": {
         "name": "Диагностика регистратора",
         "price": 250
       },
-      "partsTotal": 620,
+      "partsTotal": 265,
       "workCost": 250,
-      "totalEstimate": 870,
+      "totalEstimate": 515,
       "timelineState": [
         "completed",
         "completed",
@@ -202,21 +206,25 @@
       ]
     },
     {
-      "id": "REQ-006",
-      "deviceModel": "МРСП-БРУ-01",
-      "deviceSn": "0001",
-      "problem": "О",
+      "id": "REQ-007",
+      "deviceModel": "РСП-БРУ-01",
+      "deviceSn": "0007",
+      "problem": "Зависает при запуске",
+      "diagnosticText": "Перепрошивка контроллера, замена батарейки CMOS.",
       "photoUrl": "",
       "videoUrl": "",
+      "photoUrls": [],
+      "videoUrlFile": "",
       "status": "pending_review",
-      "createdAt": "2026-06-04T17:53:06.403Z",
-      "selectedFaultCauses": [],
+      "createdAt": "2026-06-05T09:30:00Z",
+      "selectedFaultCauses": [
+        "Выход из строя основного блока регистратора"
+      ],
       "selectedParts": [],
       "selectedWork": null,
       "partsTotal": 0,
       "workCost": 0,
       "totalEstimate": 0,
-      "diagnosticText": "выявлена проблема с датчиком ну и вот",
       "timelineState": [
         "pending",
         "pending",
@@ -224,6 +232,107 @@
         "pending",
         "pending",
         "pending"
+      ]
+    },
+    {
+      "id": "REQ-008",
+      "deviceModel": "СМСО-БРУ-01",
+      "deviceSn": "0008",
+      "problem": "Не сохраняет настройки",
+      "diagnosticText": "",
+      "photoUrl": "",
+      "videoUrl": "",
+      "photoUrls": [],
+      "videoUrlFile": "",
+      "status": "in-progress",
+      "createdAt": "2026-06-06T12:15:00Z",
+      "selectedFaultCauses": [
+        "Выход из строя блока питания"
+      ],
+      "selectedParts": [
+        {
+          "name": "Блок питания",
+          "price": 90
+        }
+      ],
+      "selectedWork": {
+        "name": "Диагностика регистратора",
+        "price": 250
+      },
+      "partsTotal": 90,
+      "workCost": 250,
+      "totalEstimate": 340,
+      "timelineState": [
+        "completed",
+        "active",
+        "pending",
+        "pending",
+        "pending",
+        "pending"
+      ]
+    },
+    {
+      "id": "REQ-009",
+      "deviceModel": "МРСП-БРУ-01",
+      "deviceSn": "0009",
+      "problem": "Нет реакции на кнопки",
+      "diagnosticText": "Предположительно проблема с микроконтроллером, ожидается диагностика.",
+      "photoUrl": "",
+      "videoUrl": "",
+      "photoUrls": [],
+      "videoUrlFile": "",
+      "status": "pending",
+      "createdAt": "2026-06-07T08:00:00Z",
+      "selectedFaultCauses": [],
+      "selectedParts": [],
+      "selectedWork": null,
+      "partsTotal": 0,
+      "workCost": 0,
+      "totalEstimate": 0,
+      "timelineState": [
+        "pending",
+        "pending",
+        "pending",
+        "pending",
+        "pending",
+        "pending"
+      ]
+    },
+    {
+      "id": "REQ-010",
+      "deviceModel": "МРСП-БРУ-02",
+      "deviceSn": "0010",
+      "problem": "Датчик давления показывает ошибку",
+      "diagnosticText": "Замена датчика, калибровка.",
+      "photoUrl": "",
+      "videoUrl": "",
+      "photoUrls": [],
+      "videoUrlFile": "",
+      "status": "completed",
+      "createdAt": "2026-06-02T14:20:00Z",
+      "selectedFaultCauses": [
+        "Выход из строя блока датчиков"
+      ],
+      "selectedParts": [
+        {
+          "name": "Датчик давления",
+          "price": 800
+        }
+      ],
+      "selectedWork": {
+        "name": "Калибровка регистратора",
+        "price": 200
+      },
+      "partsTotal": 800,
+      "workCost": 200,
+      "totalEstimate": 1000,
+      "timelineState": [
+        "completed",
+        "completed",
+        "completed",
+        "completed",
+        "completed",
+        "completed"
       ]
     }
   ],
@@ -335,13 +444,49 @@
       "owner": "Белорусский инновационный фонд",
       "region": "Минск",
       "date": "2024-03-20"
+    },
+    {
+      "id": "13",
+      "model": "РСП-БРУ-01",
+      "sn": "0007",
+      "ownerName": "Анна Ковалёва",
+      "owner": "ОАО «Могилёвхимволокно»",
+      "region": "Могилёв",
+      "date": "2025-06-01"
+    },
+    {
+      "id": "14",
+      "model": "СМСО-БРУ-01",
+      "sn": "0008",
+      "ownerName": "Анна Ковалёва",
+      "owner": "ОАО «Могилёвхимволокно»",
+      "region": "Могилёв",
+      "date": "2025-06-05"
+    },
+    {
+      "id": "15",
+      "model": "МРСП-БРУ-01",
+      "sn": "0009",
+      "ownerName": "Сергей Зайцев",
+      "owner": "ЗАО «ТехноИнжиниринг»",
+      "region": "Минск",
+      "date": "2025-05-20"
+    },
+    {
+      "id": "16",
+      "model": "МРСП-БРУ-02",
+      "sn": "0010",
+      "ownerName": "Елена Морозова",
+      "owner": "ООО «ЭнергоПрибор»",
+      "region": "Гродно",
+      "date": "2025-06-02"
     }
   ],
   "spareParts": [
     {
       "id": "1",
       "name": "Датчик тока",
-      "price": 500,
+      "price": 501,
       "supplier": "ООО «ТехноСервис»"
     },
     {
@@ -397,6 +542,12 @@
       "name": "Разъём питания",
       "price": 25,
       "supplier": "ООО «ТехноСервис»"
+    },
+    {
+      "id": "11",
+      "name": "Датчик давления",
+      "price": 800,
+      "supplier": "ООО «ТехноПрибор»"
     }
   ],
   "workTypes": [
@@ -446,6 +597,30 @@
       "email": "d.sokolov@bru.by",
       "role": "customer",
       "status": "active"
+    },
+    {
+      "id": "3",
+      "username": "Анна Ковалёва",
+      "company": "ОАО «Могилёвхимволокно»",
+      "email": "a.kovaleva@mogilevhim.by",
+      "role": "admin",
+      "status": "active"
+    },
+    {
+      "id": "4",
+      "username": "Сергей Зайцев",
+      "company": "ЗАО «ТехноИнжиниринг»",
+      "email": "s.zaytsev@tehno.by",
+      "role": "customer",
+      "status": "blocked"
+    },
+    {
+      "id": "5",
+      "username": "Елена Морозова",
+      "company": "ООО «ЭнергоПрибор»",
+      "email": "e.morozova@energo.by",
+      "role": "customer",
+      "status": "blocked"
     }
   ],
   "messages": [
@@ -486,7 +661,7 @@
       "read": true
     },
     {
-      "id": "OF_7x009eDg",
+      "id": "5",
       "requestId": "REQ-003",
       "sender": "customer",
       "senderName": "Дмитрий Соколов",
@@ -495,12 +670,48 @@
       "read": false
     },
     {
-      "id": "0Aa2J-uoVQo",
+      "id": "6",
       "requestId": "REQ-003",
       "sender": "support",
       "senderName": "Служба поддержки",
       "text": "Заказ готов",
       "timestamp": "2026-05-31T13:01:36.953Z",
+      "read": false
+    },
+    {
+      "id": "7",
+      "requestId": "REQ-007",
+      "sender": "customer",
+      "senderName": "Анна Ковалёва",
+      "text": "Когда проведут диагностику?",
+      "timestamp": "2026-06-06T10:00:00Z",
+      "read": false
+    },
+    {
+      "id": "8",
+      "requestId": "REQ-008",
+      "sender": "support",
+      "senderName": "Служба поддержки",
+      "text": "Ваша заявка принята, инженер свяжется в течение дня.",
+      "timestamp": "2026-06-07T09:30:00Z",
+      "read": false
+    },
+    {
+      "id": "9",
+      "requestId": "REQ-009",
+      "sender": "customer",
+      "senderName": "Сергей Зайцев",
+      "text": "Нужна срочная диагностика, оборудование простаивает.",
+      "timestamp": "2026-06-08T08:15:00Z",
+      "read": false
+    },
+    {
+      "id": "10",
+      "requestId": "REQ-010",
+      "sender": "support",
+      "senderName": "Служба поддержки",
+      "text": "Ремонт завершён, можете забирать устройство.",
+      "timestamp": "2026-06-09T12:00:00Z",
       "read": false
     }
   ],
