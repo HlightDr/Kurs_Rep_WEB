@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="css/repair-request.css">
 </head>
 <body>
+    <div id="preloader" class="preloader hidden">
+    <div class="spinner"></div>
+</div>
     <div class="container">
         <div>
             <button class="back-button">
@@ -200,7 +203,6 @@
                         <input type="text" id="cardCvv" class="modal-input" placeholder="123" maxlength="3">
                     </div>
                 </div>
-                <p class="helper-text payment-helper">Тестовый режим: введите любые данные</p>
             </div>
             <div class="modal-footer">
                 <button id="payConfirmBtn" class="btn-primary">Оплатить</button>
@@ -208,6 +210,28 @@
             </div>
         </div>
     </div>
+
+    <div id="receiptModal" class="modal-overlay hidden">
+    <div class="modal receipt-modal">
+        <div class="modal-header">
+            <h3>Чек об оплате</h3>
+            <button class="close-btn" id="closeReceiptBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="receipt-details">
+                <p><strong>Статус:</strong> <span style="color: green;">✓ Оплачено</span></p>
+                <p><strong>Сумма:</strong> <span id="receiptAmount"></span></p>
+                <p><strong>Карта:</strong> •••• <span id="receiptCardLast4"></span></p>
+                <p><strong>Дата/время:</strong> <span id="receiptDateTime"></span></p>
+                <p><strong>Заявка:</strong> <span id="receiptRequestId"></span></p>
+                <p><strong>Транзакция:</strong> <span id="receiptTransactionId"></span></p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="receiptOkBtn" class="btn-primary">Закрыть</button>
+        </div>
+    </div>
+</div>
 
     <script src="js/repair-request.js"></script>
 </body>
