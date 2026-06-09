@@ -5,6 +5,15 @@
     }
 })();
 
+function showPreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.remove('hidden');
+}
+function hidePreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.add('hidden');
+}
+
 function showAlert(message, title = 'Уведомление') {
     return new Promise((resolve) => {
         const modal = document.getElementById('customAlert');
@@ -25,24 +34,30 @@ function showAlert(message, title = 'Уведомление') {
 }
 
 async function loadRecorders() {
+    showPreloader();
     try {
         const response = await fetch('http://localhost:3000/recorders');
         const recorders = await response.json();
         const tbody = document.querySelector('.table-container tbody');
         tbody.innerHTML = '';
         recorders.forEach(rec => addRecorderToTable(rec));
+        attachHistoryButtons();
     } catch (error) {
         console.error('Ошибка загрузки регистраторов:', error);
+        await showAlert('Не удалось загрузить список устройств', 'Ошибка');
+    } finally {
+        hidePreloader();
     }
 }
 
 function addRecorderToTable(recorder) {
     const tbody = document.querySelector('.table-container tbody');
     const row = tbody.insertRow();
+    const org = recorder.owner || '';
     row.innerHTML = `
         <td class="device-model">${escapeHtml(recorder.model)}</td>
         <td class="serial-number">${escapeHtml(recorder.sn)}</td>
-        <td class="owner">${escapeHtml(recorder.owner || '')}</td>
+        <td class="owner">${escapeHtml(org)}</td>
         <td class="date">${recorder.date}</td>
         <td><button class="view-history-button" data-sn="${escapeHtml(recorder.sn)}" data-model="${escapeHtml(recorder.model)}">Посмотреть историю ремонта</button></td>
     `;
@@ -72,30 +87,23 @@ document.querySelector('form').addEventListener('submit', async (e) => {
         await showAlert('Введите серийный номер', 'Ошибка');
         return;
     }
-    let recorders = [];
+    showPreloader();
     try {
         const resp = await fetch('http://localhost:3000/recorders');
-        recorders = await resp.json();
-    } catch (error) {
-        await showAlert('Сервер недоступен', 'Ошибка');
-        return;
-    }
-    if (recorders.some(r => r.sn === serial)) {
-        await showAlert('Устройство с таким серийным номером уже зарегистрировано', 'Ошибка');
-        return;
-    }
-
-    let model = 'Неизвестное устройство';
-    if (serial.startsWith('DL200')) model = 'DataLogger DL-200';
-    else if (serial.startsWith('VM450')) model = 'VibroMaster VM-450';
-    else if (serial.startsWith('T12')) model = 'ThermoRec T-12';
-    else if (serial.startsWith('SL3')) model = 'SpyderLog SL-3';
-    const owner = 'Новый пользователь'; 
-    const now = new Date();
-    const date = now.toLocaleDateString('ru-RU');
-    const newRecorder = { model, sn: serial, owner, date };
-
-    try {
+        const recorders = await resp.json();
+        if (recorders.some(r => r.sn === serial)) {
+            await showAlert('Устройство с таким серийным номером уже зарегистрировано', 'Ошибка');
+            return;
+        }
+        let model = 'Неизвестное устройство';
+        if (serial.startsWith('DL200')) model = 'DataLogger DL-200';
+        else if (serial.startsWith('VM450')) model = 'VibroMaster VM-450';
+        else if (serial.startsWith('T12')) model = 'ThermoRec T-12';
+        else if (serial.startsWith('SL3')) model = 'SpyderLog SL-3';
+        const owner = 'Новый пользователь';
+        const now = new Date();
+        const date = now.toLocaleDateString('ru-RU');
+        const newRecorder = { model, sn: serial, owner, date };
         const response = await fetch('http://localhost:3000/recorders', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -113,6 +121,8 @@ document.querySelector('form').addEventListener('submit', async (e) => {
     } catch (error) {
         console.error(error);
         await showAlert('Сервер недоступен', 'Ошибка');
+    } finally {
+        hidePreloader();
     }
 });
 
@@ -140,6 +150,5 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'customer_dashboard.html';
         });
     }
+    loadRecorders();
 });
-
-loadRecorders().then(() => attachHistoryButtons());
