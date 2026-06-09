@@ -5,6 +5,15 @@
     }
 })();
 
+function showPreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.remove('hidden');
+}
+function hidePreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.add('hidden');
+}
+
 document.querySelector('.btn-primary').addEventListener('click', () => {
     window.location.href = 'new-repair-request.html';
 });
@@ -42,7 +51,6 @@ function createRequestItem(req) {
         <div class="request-problem">${escapeHtml(req.problem)}</div>
         <div class="request-footer">
             <span class="request-id">ID: ${escapeHtml(req.id)}</span>
-            <div class="deadline"><span>Готовность: —</span></div>
         </div>
     `;
     item.addEventListener('click', () => {
@@ -52,6 +60,7 @@ function createRequestItem(req) {
 }
 
 async function loadRecorders() {
+    showPreloader();
     try {
         const response = await fetch('http://localhost:3000/recorders');
         const allRecorders = await response.json();
@@ -96,10 +105,13 @@ async function loadRecorders() {
         }
     } catch (error) {
         console.error('Ошибка загрузки регистраторов:', error);
+    } finally {
+        hidePreloader();
     }
 }
 
 async function loadActiveRequests() {
+    showPreloader();
     try {
         const response = await fetch('http://localhost:3000/repairRequests');
         const allRequests = await response.json();
@@ -129,10 +141,16 @@ async function loadActiveRequests() {
         }
     } catch (error) {
         console.error('Ошибка загрузки заявок:', error);
+    } finally {
+        hidePreloader();
     }
 }
 
 async function loadLastCompletedRepair() {
+    const repairBlock = document.querySelector('.repair-completed');
+    if (!repairBlock) return;
+
+    showPreloader();
     try {
         const response = await fetch('http://localhost:3000/repairRequests');
         const allRequests = await response.json();
@@ -149,7 +167,13 @@ async function loadLastCompletedRepair() {
                 mySnList.includes(r.deviceSn) && r.status === 'completed'
             );
         }
-        if (completed.length === 0) return;
+        
+        if (completed.length === 0) {
+            repairBlock.style.display = 'none';
+            return;
+        }
+        
+        repairBlock.style.display = '';
         completed.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         const last = completed[0];
         const repairTitleEl = document.querySelector('.repair-title');
@@ -159,7 +183,8 @@ async function loadLastCompletedRepair() {
         if (repairTitleEl) repairTitleEl.innerText = last.deviceModel;
         if (repairDescEl) repairDescEl.innerText = last.problem;
         if (repairDateEl) repairDateEl.innerText = new Date(last.createdAt).toLocaleDateString('ru-RU');
-        if (repairPriceEl) repairPriceEl.innerText = (last.totalEstimate || 0).toLocaleString('ru-RU') + ' ₽';
+        if (repairPriceEl) repairPriceEl.innerText = (last.totalEstimate || 0).toLocaleString('ru-RU') + ' Б';
+        
         const repairCard = document.querySelector('.repair-completed');
         if (repairCard) {
             repairCard.style.cursor = 'pointer';
@@ -169,10 +194,13 @@ async function loadLastCompletedRepair() {
         }
     } catch (error) {
         console.error('Ошибка загрузки последнего ремонта:', error);
+    } finally {
+        hidePreloader();
     }
 }
 
 async function loadRecentMessages() {
+    showPreloader();
     try {
         const role = sessionStorage.getItem('userRole');
         let myRequestIds = [];
@@ -247,6 +275,8 @@ async function loadRecentMessages() {
     } catch (error) {
         console.error('Ошибка загрузки сообщений:', error);
         document.getElementById('recent-messages-container').innerHTML = '<p>Ошибка загрузки</p>';
+    } finally {
+        hidePreloader();
     }
 }
 
@@ -274,23 +304,27 @@ function showAdminButton() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadRecorders();
-    await loadActiveRequests();
-    await loadLastCompletedRepair();
-    await loadRecentMessages();  
-    showAdminButton();
+    showPreloader();
+    try {
+        await loadRecorders();
+        await loadActiveRequests();
+        await loadLastCompletedRepair();
+        await loadRecentMessages();
+        showAdminButton();
 
-    const recordersLink = document.getElementById('recordersLink');
-if (recordersLink) {
-    const role = sessionStorage.getItem('userRole');
-    if (role === 'admin') {
-        recordersLink.style.cursor = 'pointer';
-        recordersLink.addEventListener('click', () => {
-            window.location.href = 'registered_recorders.html';
-        });
-    } else {
-        recordersLink.style.cursor = 'default';
+        const recordersLink = document.getElementById('recordersLink');
+        if (recordersLink) {
+            const role = sessionStorage.getItem('userRole');
+            if (role === 'admin') {
+                recordersLink.style.cursor = 'pointer';
+                recordersLink.addEventListener('click', () => {
+                    window.location.href = 'registered_recorders.html';
+                });
+            } else {
+                recordersLink.style.cursor = 'default';
+            }
+        }
+    } finally {
+        hidePreloader();
     }
-}
 });
-
