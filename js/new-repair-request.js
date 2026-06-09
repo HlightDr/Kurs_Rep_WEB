@@ -5,6 +5,15 @@
     }
 })();
 
+function showPreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.remove('hidden');
+}
+function hidePreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.add('hidden');
+}
+
 function showAlert(message, title = 'Уведомление') {
     return new Promise((resolve) => {
         const modal = document.getElementById('customAlert');
@@ -24,7 +33,44 @@ function showAlert(message, title = 'Уведомление') {
     });
 }
 
+async function getNextRequestId() {
+    try {
+        const response = await fetch('http://localhost:3000/repairRequests');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const requests = await response.json();
+        let maxNum = 0;
+        for (const req of requests) {
+            const match = req.id && String(req.id).match(/^REQ-(\d+)$/);
+            if (match) {
+                const num = parseInt(match[1], 10);
+                if (num > maxNum) maxNum = num;
+            }
+        }
+        const nextNum = maxNum + 1;
+        const newId = `REQ-${nextNum.toString().padStart(3, '0')}`;
+        return newId;
+    } catch (error) {
+        console.error('Ошибка в getNextRequestId:', error);
+        return `REQ-${Date.now().toString().slice(-3)}`;
+    }
+}
+
+async function hasActiveRequest(deviceSn) {
+    try {
+        const response = await fetch('http://localhost:3000/repairRequests');
+        const requests = await response.json();
+        return requests.some(req => req.deviceSn === deviceSn && req.status !== 'completed');
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
+
+let isViewMode = false; 
+let currentRequestId = null;
+
 async function loadDevices() {
+    showPreloader();
     try {
         const role = sessionStorage.getItem('userRole');
         const currentUser = sessionStorage.getItem('username') || 'Дмитрий Соколов';
@@ -47,161 +93,129 @@ async function loadDevices() {
                 select.appendChild(option);
             });
         }
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestId = urlParams.get('id');
+        if (requestId) {
+            await loadRequestData(requestId);
+        } else {
+            loadFormState();
+        }
     } catch (error) {
         console.error(error);
         await showAlert('Не удалось загрузить список устройств', 'Ошибка');
+    } finally {
+        hidePreloader();
     }
 }
 
-function initPhotoUpload() {
-    const container = document.getElementById('photos-container');
-    const addBtn = document.getElementById('add-photo-btn');
-    const previewContainer = document.getElementById('photos-preview');
-    let photoFileMap = new Map(); // храним файлы по индексу поля
-
-    function updatePhotoPreview() {
-        const inputs = document.querySelectorAll('.photo-input');
-        previewContainer.innerHTML = '';
-        inputs.forEach((input, idx) => {
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const div = document.createElement('div');
-                    div.style.position = 'relative';
-                    div.style.width = '80px';
-                    div.style.height = '80px';
-                    div.style.border = '1px solid #ccc';
-                    div.style.borderRadius = '8px';
-                    div.style.overflow = 'hidden';
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.width = '100%';
-                    img.style.height = '100%';
-                    img.style.objectFit = 'cover';
-                    const removeBtn = document.createElement('button');
-                    removeBtn.textContent = '✕';
-                    removeBtn.style.position = 'absolute';
-                    removeBtn.style.top = '2px';
-                    removeBtn.style.right = '2px';
-                    removeBtn.style.backgroundColor = 'rgba(0,0,0,0.6)';
-                    removeBtn.style.color = 'white';
-                    removeBtn.style.border = 'none';
-                    removeBtn.style.borderRadius = '50%';
-                    removeBtn.style.width = '20px';
-                    removeBtn.style.height = '20px';
-                    removeBtn.style.cursor = 'pointer';
-                    removeBtn.style.fontSize = '12px';
-                    removeBtn.style.display = 'flex';
-                    removeBtn.style.alignItems = 'center';
-                    removeBtn.style.justifyContent = 'center';
-                    removeBtn.onclick = () => {
-                        input.value = '';
-                        div.remove();
-                        updatePhotoPreview();
-                        updateAddButtonState();
-                    };
-                    div.appendChild(img);
-                    div.appendChild(removeBtn);
-                    previewContainer.appendChild(div);
-                };
-                reader.readAsDataURL(file);
+async function loadRequestData(requestId) {
+    showPreloader();
+    try {
+        const response = await fetch(`http://localhost:3000/repairRequests/${requestId}`);
+        if (!response.ok) throw new Error('Заявка не найдена');
+        const request = await response.json();
+        currentRequestId = request.id;
+        isViewMode = true;
+        const select = document.getElementById('device-select');
+        if (select && request.deviceModel) {
+            for (let i = 0; i < select.options.length; i++) {
+                if (select.options[i].value === request.deviceModel) {
+                    select.selectedIndex = i;
+                    break;
+                }
             }
-        });
-    }
-
-    function updateAddButtonState() {
-        const inputs = document.querySelectorAll('.photo-input');
-        const nonEmptyCount = Array.from(inputs).filter(inp => inp.files && inp.files[0]).length;
-        if (nonEmptyCount >= 9) {
-            addBtn.disabled = true;
-            addBtn.style.opacity = '0.5';
-        } else {
-            addBtn.disabled = false;
-            addBtn.style.opacity = '1';
         }
-    }
-
-    // обработчик изменения любого фото-поля
-    document.addEventListener('change', (e) => {
-        if (e.target.classList && e.target.classList.contains('photo-input')) {
-            updatePhotoPreview();
-            updateAddButtonState();
+        document.getElementById('problem-description').value = request.problem || '';
+        document.getElementById('photo-url').value = request.photoUrl || '';
+        document.getElementById('video-url').value = request.videoUrl || '';
+        
+        select.disabled = true;
+        document.getElementById('problem-description').disabled = true;
+        document.getElementById('photo-url').disabled = true;
+        document.getElementById('video-url').disabled = true;
+        const submitBtn = document.getElementById('submitBottomBtn');
+        if (submitBtn) {
+            submitBtn.style.display = 'none';
         }
-    });
-
-    addBtn.addEventListener('click', () => {
-        const currentCount = document.querySelectorAll('.photo-input').length;
-        if (currentCount >= 9) {
-            showAlert('Максимум 9 фотографий', 'Ошибка');
-            return;
-        }
-        const newInput = document.createElement('input');
-        newInput.type = 'file';
-        newInput.classList.add('photo-input');
-        newInput.accept = 'image/*';
-        container.appendChild(newInput);
-        updateAddButtonState();
-    });
-
-    updateAddButtonState();
-}
-
-function initVideoPreview() {
-    const videoInput = document.getElementById('video-file');
-    const previewDiv = document.getElementById('video-preview');
-    videoInput.addEventListener('change', () => {
-        if (videoInput.files && videoInput.files[0]) {
-            const file = videoInput.files[0];
-            const fileName = file.name;
-            previewDiv.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span>🎥 ${fileName}</span>
-                    <button type="button" id="remove-video-btn" style="background: none; border: none; color: red; cursor: pointer;">✕</button>
-                </div>
-            `;
-            document.getElementById('remove-video-btn')?.addEventListener('click', () => {
-                videoInput.value = '';
-                previewDiv.innerHTML = '';
+        const backBtn = document.querySelector('.back-button');
+        if (!backBtn) {
+            const header = document.querySelector('.header');
+            const btn = document.createElement('button');
+            btn.textContent = 'Назад';
+            btn.className = 'btn btn-secondary';
+            btn.style.marginTop = '20px';
+            btn.addEventListener('click', () => {
+                window.location.href = 'customer_dashboard.html';
             });
-        } else {
-            previewDiv.innerHTML = '';
+            document.querySelector('.submit-section').appendChild(btn);
+        }
+        const title = document.querySelector('.header h1');
+        if (title) title.innerText = `Просмотр заявки ${request.id}`;
+    } catch (error) {
+        console.error(error);
+        await showAlert('Заявка не найдена', 'Ошибка');
+        window.location.href = 'customer_dashboard.html';
+    } finally {
+        hidePreloader();
+    }
+}
+
+function saveFormState() {
+    if (isViewMode) return; 
+    const deviceSelect = document.getElementById('device-select');
+    const problem = document.getElementById('problem-description');
+    const photoUrl = document.getElementById('photo-url');
+    const videoUrl = document.getElementById('video-url');
+    const data = {
+        deviceValue: deviceSelect ? deviceSelect.value : '',
+        problem: problem ? problem.value : '',
+        photoUrl: photoUrl ? photoUrl.value : '',
+        videoUrl: videoUrl ? videoUrl.value : ''
+    };
+    localStorage.setItem('newRepairForm', JSON.stringify(data));
+}
+
+function loadFormState() {
+    const saved = localStorage.getItem('newRepairForm');
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    const deviceSelect = document.getElementById('device-select');
+    if (deviceSelect && data.deviceValue) {
+        deviceSelect.value = data.deviceValue;
+    }
+    const problem = document.getElementById('problem-description');
+    if (problem && data.problem !== undefined) problem.value = data.problem;
+    const photoUrl = document.getElementById('photo-url');
+    if (photoUrl && data.photoUrl !== undefined) photoUrl.value = data.photoUrl;
+    const videoUrl = document.getElementById('video-url');
+    if (videoUrl && data.videoUrl !== undefined) videoUrl.value = data.videoUrl;
+}
+
+function attachAutoSave() {
+    if (isViewMode) return;
+    const inputs = ['device-select', 'problem-description', 'photo-url', 'video-url'];
+    inputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            const eventType = (id === 'device-select') ? 'change' : 'input';
+            el.addEventListener(eventType, saveFormState);
         }
     });
 }
 
-function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-    });
-}
-
-async function collectFiles() {
-    const photoInputs = document.querySelectorAll('.photo-input');
-    const photoFiles = [];
-    for (let inp of photoInputs) {
-        if (inp.files && inp.files[0]) photoFiles.push(inp.files[0]);
-    }
-    const selectedPhotos = photoFiles.slice(0, 9);
-    const photoBase64 = [];
-    for (let f of selectedPhotos) photoBase64.push(await fileToBase64(f));
-    const videoInput = document.getElementById('video-file');
-    let videoBase64 = '';
-    if (videoInput.files && videoInput.files[0]) videoBase64 = await fileToBase64(videoInput.files[0]);
-    return { photoUrls: photoBase64, videoUrlFile: videoBase64 };
+function clearFormState() {
+    localStorage.removeItem('newRepairForm');
 }
 
 async function submitRequest() {
+    if (isViewMode) return; 
     const deviceSelect = document.getElementById('device-select');
     const selectedOption = deviceSelect.options[deviceSelect.selectedIndex];
     const deviceModel = selectedOption.value;
     const deviceSn = selectedOption.getAttribute('data-sn') || '';
     const problem = document.getElementById('problem-description').value.trim();
-    const photoUrlLink = document.getElementById('photo-url').value.trim();
-    const videoUrlLink = document.getElementById('video-url').value.trim();
+    const photoUrl = document.getElementById('photo-url').value.trim();
+    const videoUrl = document.getElementById('video-url').value.trim();
 
     if (!deviceModel) {
         await showAlert('Выберите устройство', 'Ошибка');
@@ -212,59 +226,61 @@ async function submitRequest() {
         return;
     }
 
-    let photoUrls = [];
-    let videoUrlFile = '';
+    showPreloader();
     try {
-        const files = await collectFiles();
-        photoUrls = files.photoUrls;
-        videoUrlFile = files.videoUrlFile;
-    } catch (err) {
-        console.error(err);
-        await showAlert('Ошибка при обработке файлов', 'Ошибка');
-        return;
-    }
+        const activeExists = await hasActiveRequest(deviceSn);
+        if (activeExists) {
+            await showAlert('Для этого устройства уже есть незавершённая заявка', 'Ошибка');
+            return;
+        }
 
-    const newRequest = {
-        deviceModel,
-        deviceSn,
-        problem,
-        photoUrl: photoUrlLink,
-        videoUrl: videoUrlLink,
-        photoUrls: photoUrls,
-        videoUrlFile: videoUrlFile,
-        status: 'pending_review',
-        createdAt: new Date().toISOString(),
-        selectedFaultCauses: [],
-        selectedParts: [],
-        selectedWork: null,
-        partsTotal: 0,
-        workCost: 0,
-        totalEstimate: 0,
-        diagnosticText: '',
-        timelineState: ['completed', 'completed', 'active', 'pending', 'pending', 'pending']
-    };
+        const newId = await getNextRequestId();
+        const newRequest = {
+            id: newId,
+            deviceModel,
+            deviceSn,
+            problem,
+            photoUrl,
+            videoUrl,
+            status: 'pending_review',
+            createdAt: new Date().toISOString(),
+            selectedFaultCauses: [],
+            selectedParts: [],
+            selectedWork: null,
+            partsTotal: 0,
+            workCost: 0,
+            totalEstimate: 0,
+            diagnosticText: '',
+            timelineState: ['pending', 'pending', 'pending', 'pending', 'pending', 'pending']
+        };
 
-    try {
         const response = await fetch('http://localhost:3000/repairRequests', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newRequest)
         });
         if (response.ok) {
+            clearFormState();
             await showAlert('Заявка отправлена на рассмотрение', 'Успех');
             window.location.href = 'customer_dashboard.html';
         } else {
+            const err = await response.text();
+            console.error('Ошибка сервера:', err);
             await showAlert('Ошибка при отправке', 'Ошибка');
         }
     } catch (error) {
         console.error(error);
         await showAlert('Сервер недоступен', 'Ошибка');
+    } finally {
+        hidePreloader();
     }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadDevices();
-    initPhotoUpload();
-    initVideoPreview();
-    document.getElementById('submitBottomBtn')?.addEventListener('click', submitRequest);
+    await loadDevices(); 
+    attachAutoSave();
+    const submitBtn = document.getElementById('submitBottomBtn');
+    if (submitBtn && !isViewMode) {
+        submitBtn.addEventListener('click', submitRequest);
+    }
 });
