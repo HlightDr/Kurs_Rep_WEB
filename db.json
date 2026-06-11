@@ -38,7 +38,7 @@
         "active",
         "pending",
         "pending",
-        "active"
+        "pending"
       ]
     },
     {
@@ -334,6 +334,33 @@
         "completed",
         "completed"
       ]
+    },
+    {
+      "id": "REQ-011",
+      "deviceModel": "РСП-БРУ-01",
+      "deviceSn": "0003",
+      "problem": "Не включается индикация",
+      "diagnosticText": "",
+      "photoUrl": "",
+      "videoUrl": "",
+      "photoUrls": [],
+      "videoUrlFile": "",
+      "status": "pending_review",
+      "createdAt": "2026-06-10T12:00:00Z",
+      "selectedFaultCauses": [],
+      "selectedParts": [],
+      "selectedWork": null,
+      "partsTotal": 0,
+      "workCost": 0,
+      "totalEstimate": 0,
+      "timelineState": [
+        "pending",
+        "pending",
+        "pending",
+        "pending",
+        "pending",
+        "pending"
+      ]
     }
   ],
   "recorders": [
@@ -359,8 +386,8 @@
       "id": "3",
       "model": "РСП-БРУ-01",
       "sn": "0003",
-      "ownerName": "РУП «Белоруснефть»",
-      "owner": "РУП «Белоруснефть»",
+      "ownerName": "Сергей Зайцев",
+      "owner": "ЗАО «ТехноИнжиниринг»",
       "region": "Минск",
       "date": "2024-01-15"
     },
@@ -444,42 +471,6 @@
       "owner": "Белорусский инновационный фонд",
       "region": "Минск",
       "date": "2024-03-20"
-    },
-    {
-      "id": "13",
-      "model": "РСП-БРУ-01",
-      "sn": "0007",
-      "ownerName": "Анна Ковалёва",
-      "owner": "ОАО «Могилёвхимволокно»",
-      "region": "Могилёв",
-      "date": "2025-06-01"
-    },
-    {
-      "id": "14",
-      "model": "СМСО-БРУ-01",
-      "sn": "0008",
-      "ownerName": "Анна Ковалёва",
-      "owner": "ОАО «Могилёвхимволокно»",
-      "region": "Могилёв",
-      "date": "2025-06-05"
-    },
-    {
-      "id": "15",
-      "model": "МРСП-БРУ-01",
-      "sn": "0009",
-      "ownerName": "Сергей Зайцев",
-      "owner": "ЗАО «ТехноИнжиниринг»",
-      "region": "Минск",
-      "date": "2025-05-20"
-    },
-    {
-      "id": "16",
-      "model": "МРСП-БРУ-02",
-      "sn": "0010",
-      "ownerName": "Елена Морозова",
-      "owner": "ООО «ЭнергоПрибор»",
-      "region": "Гродно",
-      "date": "2025-06-02"
     }
   ],
   "spareParts": [
@@ -612,7 +603,7 @@
       "company": "ЗАО «ТехноИнжиниринг»",
       "email": "s.zaytsev@tehno.by",
       "role": "customer",
-      "status": "blocked"
+      "status": "active"
     },
     {
       "id": "5",
